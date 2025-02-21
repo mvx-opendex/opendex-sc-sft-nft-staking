@@ -1,0 +1,65 @@
+{
+  "steps": [
+    {
+      "step": "setState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "1",
+          "balance": "0"
+        }
+      },
+      "newAddresses": [
+        {
+          "creatorAddress": "address:owner",
+          "creatorNonce": "1",
+          "newAddress": "sc:staking"
+        }
+      ]
+    },
+    {
+      "step": "scDeploy",
+      "id": "deploy",
+      "tx": {
+        "from": "address:owner",
+        "contractCode": "mxsc:../output/opendex-sc-sft-nft-staking.mxsc.json",
+        "arguments": [
+          "str:SFT-000000",
+          "str:REWARD-000000",
+          "address:fees",
+          "5"
+        ],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "",
+        "logs": [],
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "isAdmin",
+        "arguments": ["address:owner"]
+      },
+      "expect": {
+        "out": ["true"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPerformanceFeePercent",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["5"]
+      }
+    }
+  ]
+}
