@@ -42,3 +42,18 @@ fn set_fee_receiver_rs() {
 fn set_performance_fee_rs() {
     world().run("scenarios/set_performance_fee.scen.json");
 }
+
+#[test]
+fn stake_1_rs() {
+    world().run("scenarios/stake_1.scen.json");
+}
+
+#[test]
+fn stake_2_rs() {
+    world().run("scenarios/stake_2.scen.json");
+}
+
+#[test]
+fn stake_errors_rs() {
+    world().run("scenarios/stake_errors.scen.json");
+}

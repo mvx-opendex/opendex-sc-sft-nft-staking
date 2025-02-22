@@ -34,6 +34,7 @@
             "str:reward_period_end": "u64:0",
             "str:reward_start_time": "u64:0",
             "str:reward_token": "str:REWARD-000000",
+            "str:staked_nft_collection_id": "str:SPOS-000000",
             "str:staking_sft_collection_id": "str:SFT-000000",
             "str:ticket_collection_id": "str:TCOLL-000000",
             "str:total_staked": "biguint:0"
@@ -127,6 +128,17 @@
       },
       "expect": {
         "out": ["0"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getStakedNftCollectionId",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["str:SPOS-000000"]
       }
     }
   ]
