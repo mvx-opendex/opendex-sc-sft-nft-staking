@@ -6,6 +6,7 @@ multiversx_sc::imports!();
 multiversx_sc::derive_imports!();
 
 static ISSUE_NFT_COLLECTION_FEE: u64 = 50000000000000000u64;
+static RPS_PRECISION: u64 = 10_000_000_000u64;
 
 #[type_abi]
 #[derive(TopEncode, TopDecode)]
@@ -55,6 +56,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     #[storage_mapper("staked_nft_collection_id")]
     fn staked_nft_collection_id(&self) -> NonFungibleTokenMapper<Self::Api>;
 
+    /// Return amount of reward per second (multiplied by 10^10 for precision)
     #[view(getRewardPerSecond)]
     #[storage_mapper("reward_per_second")]
     fn reward_per_second(&self) -> SingleValueMapper<BigUint>;
@@ -239,7 +241,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             0
         };
 
-        let total_possible_rewards = &self.reward_per_second().get() * time_diff;
+        let total_possible_rewards = &self.reward_per_second().get() * time_diff / RPS_PRECISION;
         let user_share = &stake_info.amount * &total_possible_rewards / &total_staked;
 
         if user_share > BigUint::zero() {
@@ -330,7 +332,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         require!(amount > BigUint::zero(), "Must provide reward amount");
         require!(duration_in_seconds > 0, "Duration must be greater than 0");
 
-        let reward_per_second = amount / BigUint::from(duration_in_seconds);
+        let reward_per_second = amount * RPS_PRECISION / BigUint::from(duration_in_seconds);
         self.reward_per_second().set(&reward_per_second);
         self.reward_start_time().set(current_time);
         self.reward_period_end()

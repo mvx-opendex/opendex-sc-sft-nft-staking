@@ -1,0 +1,132 @@
+{
+  "steps": [
+    {
+      "step": "setState",
+      "accounts": {
+        "address:admin": {
+          "nonce": "0",
+          "balance": "0"
+        },
+        "address:fee": {
+          "nonce": "0",
+          "balance": "0"
+        },
+        "address:owner": {
+          "nonce": "1",
+          "balance": "0"
+        },
+        "sc:staking": {
+          "code": "file:../output/opendex-sc-sft-nft-staking.wasm",
+          "esdt": {
+            "str:SPOS-000000": {
+              "lastNonce": "0",
+              "roles": ["ESDTRoleNFTBurn", "ESDTRoleNFTCreate"]
+            }
+          },
+          "owner": "address:owner",
+          "storage": {
+            "str:fee_receiver": "address:fee",
+            "str:only_admin_module:admins.len": "u32:1",
+            "str:only_admin_module:admins.item|u32:1": "address:admin",
+            "str:only_admin_module:admins.index|address:admin": "u32:1",
+            "str:performance_fee_percent": "u32:10",
+            "str:reward_period_end": "u64:0",
+            "str:reward_start_time": "u64:0",
+            "str:reward_token": "str:REWARD-000000",
+            "str:staking_sft_collection_id": "str:SFT-000000",
+            "str:ticket_collection_id": "str:TCOLL-000000",
+            "str:total_staked": "biguint:0"
+          }
+        }
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getFeeReceiver",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["address:fee"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getFeeReceiver",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["address:fee"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getStakingSftCollectionId",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["str:SFT-000000"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getRewardToken",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["str:REWARD-000000"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPerformanceFeePercent",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["10"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getTotalStaked",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["0"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getRewardPerSecond",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["0"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getRewardStartTime",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["0"]
+      }
+    }
+  ]
+}
