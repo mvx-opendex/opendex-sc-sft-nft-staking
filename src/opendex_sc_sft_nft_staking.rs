@@ -87,7 +87,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     #[storage_mapper("funder")]
     fn funder(&self) -> SingleValueMapper<ManagedAddress>;
 
-    // FUNCTIONALITY
+    // User endpoints
 
     #[endpoint]
     #[payable]
@@ -198,6 +198,99 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         );
     }
 
+    // Funder actions
+
+    #[endpoint(issueStakedNftCollection)]
+    #[payable("EGLD")]
+    fn issue_staked_nft_collection(&self, token_name: ManagedBuffer, token_ticker: ManagedBuffer) {
+        self.require_caller_is_funder();
+
+        let payment = self.call_value().egld().clone_value();
+
+        require!(
+            payment == ISSUE_NFT_COLLECTION_FEE,
+            "Invalid payment amount"
+        );
+
+        let caller = self.blockchain().get_caller();
+
+        self.staked_nft_collection_id().issue_and_set_all_roles(
+            EsdtTokenType::NonFungible,
+            payment.clone(),
+            token_name,
+            token_ticker,
+            0, // royalties (0 decimals)
+            Some(self.callbacks().issue_callback(&caller)),
+        );
+    }
+
+    #[callback]
+    fn issue_callback(
+        &self,
+        caller: &ManagedAddress,
+        #[call_result] result: ManagedAsyncCallResult<TokenIdentifier>,
+    ) {
+        match result {
+            ManagedAsyncCallResult::Ok(token_id) => {
+                self.staked_nft_collection_id().set_token_id(token_id);
+            }
+            ManagedAsyncCallResult::Err(_) => {
+                self.staked_nft_collection_id().clear();
+
+                let payment = self.call_value().egld().clone_value();
+                if payment > BigUint::zero() {
+                    self.send().direct_egld(&caller, &payment);
+                }
+            }
+        }
+    }
+
+    #[endpoint(fundRewardsAndSetDuration)]
+    #[payable]
+    fn fund_rewards_and_set_duration(&self, duration_in_seconds: u64) {
+        self.require_caller_is_funder();
+
+        let (token_id, amount) = self.call_value().egld_or_single_fungible_esdt();
+        let current_time = self.blockchain().get_block_timestamp();
+
+        require!(
+            token_id == self.reward_token().get(),
+            "Invalid reward token"
+        );
+        require!(amount > BigUint::zero(), "Must provide reward amount");
+        require!(duration_in_seconds > 0, "Duration must be greater than 0");
+
+        let reward_per_second = amount * RPS_PRECISION / BigUint::from(duration_in_seconds);
+        self.reward_per_second().set(&reward_per_second);
+        self.reward_start_time().set(current_time);
+        self.reward_period_end()
+            .set(current_time + duration_in_seconds);
+    }
+
+    // Admin endpoints
+
+    #[only_admin]
+    #[endpoint(setPerformanceFeePercent)]
+    fn set_performance_fee_percent(&self, fee_percent: u32) {
+        require!(fee_percent <= 100, "Fee percent must be between 0 and 100");
+        self.performance_fee_percent().set(fee_percent);
+    }
+
+    #[only_admin]
+    #[endpoint(setFeeReceiver)]
+    fn set_fee_receiver(&self, new_receiver: ManagedAddress) {
+        self.fee_receiver().set(&new_receiver);
+    }
+
+    // Functions
+
+    fn require_caller_is_funder(&self) {
+        require!(
+            self.blockchain().get_caller() == self.funder().get(),
+            "Not funder"
+        );
+    }
+
     fn decode_nft_attributes(&self, nonce: u64) -> StakeInfo<Self::Api> {
         let serializer = ManagedSerializer::new();
 
@@ -276,94 +369,5 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             self.staked_nft_collection_id()
                 .nft_update_attributes(position_nonce, &updated_stake_info);
         }
-    }
-
-    // Admin functions
-
-    #[endpoint(issueStakedNftCollection)]
-    #[payable("EGLD")]
-    fn issue_staked_nft_collection(&self, token_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        self.require_caller_is_funder();
-
-        let payment = self.call_value().egld().clone_value();
-
-        require!(
-            payment == ISSUE_NFT_COLLECTION_FEE,
-            "Invalid payment amount"
-        );
-
-        let caller = self.blockchain().get_caller();
-
-        self.staked_nft_collection_id().issue_and_set_all_roles(
-            EsdtTokenType::NonFungible,
-            payment.clone(),
-            token_name,
-            token_ticker,
-            0, // royalties (0 decimals)
-            Some(self.callbacks().issue_callback(&caller)),
-        );
-    }
-
-    #[callback]
-    fn issue_callback(
-        &self,
-        caller: &ManagedAddress,
-        #[call_result] result: ManagedAsyncCallResult<TokenIdentifier>,
-    ) {
-        match result {
-            ManagedAsyncCallResult::Ok(token_id) => {
-                self.staked_nft_collection_id().set_token_id(token_id);
-            }
-            ManagedAsyncCallResult::Err(_) => {
-                self.staked_nft_collection_id().clear();
-
-                let payment = self.call_value().egld().clone_value();
-                if payment > BigUint::zero() {
-                    self.send().direct_egld(&caller, &payment);
-                }
-            }
-        }
-    }
-
-    #[endpoint(fundRewardsAndSetDuration)]
-    #[payable]
-    fn fund_rewards_and_set_duration(&self, duration_in_seconds: u64) {
-        self.require_caller_is_funder();
-
-        let (token_id, amount) = self.call_value().egld_or_single_fungible_esdt();
-        let current_time = self.blockchain().get_block_timestamp();
-
-        require!(
-            token_id == self.reward_token().get(),
-            "Invalid reward token"
-        );
-        require!(amount > BigUint::zero(), "Must provide reward amount");
-        require!(duration_in_seconds > 0, "Duration must be greater than 0");
-
-        let reward_per_second = amount * RPS_PRECISION / BigUint::from(duration_in_seconds);
-        self.reward_per_second().set(&reward_per_second);
-        self.reward_start_time().set(current_time);
-        self.reward_period_end()
-            .set(current_time + duration_in_seconds);
-    }
-
-    #[only_admin]
-    #[endpoint(setPerformanceFeePercent)]
-    fn set_performance_fee_percent(&self, fee_percent: u32) {
-        require!(fee_percent <= 100, "Fee percent must be between 0 and 100");
-        self.performance_fee_percent().set(fee_percent);
-    }
-
-    #[only_admin]
-    #[endpoint(setFeeReceiver)]
-    fn set_fee_receiver(&self, new_receiver: ManagedAddress) {
-        self.fee_receiver().set(&new_receiver);
-    }
-
-    fn require_caller_is_funder(&self) {
-        require!(
-            self.blockchain().get_caller() == self.funder().get(),
-            "Not funder"
-        );
     }
 }
