@@ -24,6 +24,21 @@ fn init_rs() {
 }
 
 #[test]
+fn issue_nft_collection_rs() {
+    world().run("scenarios/issue_nft_collection.scen.json");
+}
+
+#[test]
 fn opendex_sc_sft_nft_staking_rs() {
     world().run("scenarios/opendex_sc_sft_nft_staking.scen.json");
+}
+
+#[test]
+fn set_fee_receiver_rs() {
+    world().run("scenarios/set_fee_receiver.scen.json");
+}
+
+#[test]
+fn set_performance_fee_rs() {
+    world().run("scenarios/set_performance_fee.scen.json");
 }

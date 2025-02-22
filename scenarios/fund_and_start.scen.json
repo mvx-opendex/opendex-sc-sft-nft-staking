@@ -7,7 +7,7 @@
     {
       "step": "setState",
       "accounts": {
-        "address:admin": {
+        "address:funder": {
           "nonce": "0",
           "balance": "0",
           "esdt": {
@@ -22,7 +22,7 @@
     {
       "step": "scCall",
       "tx": {
-        "from": "address:admin",
+        "from": "address:funder",
         "to": "sc:staking",
         "esdtValue": [
           {

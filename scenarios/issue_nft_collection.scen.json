@@ -1,0 +1,105 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "opendex_sc_sft_nft_staking.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:anon": {
+          "nonce": "0",
+          "balance": "50_000_000_000_000_000"
+        },
+        "address:funder": {
+          "nonce": "0",
+          "balance": "50_000_000_000_000_000"
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:anon",
+        "to": "sc:staking",
+        "function": "issueStakedNftCollection",
+        "arguments": ["str:CollName", "str:SPOS-000000"],
+        "gasLimit": "75,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Not funder",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:funder",
+        "to": "sc:staking",
+        "egldValue": "0",
+        "function": "issueStakedNftCollection",
+        "arguments": ["str:CollName", "str:SPOS-000000"],
+        "gasLimit": "75,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Invalid payment amount",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:funder",
+        "to": "sc:staking",
+        "egldValue": "5",
+        "function": "issueStakedNftCollection",
+        "arguments": ["str:CollName", "str:SPOS-000000"],
+        "gasLimit": "75,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Invalid payment amount",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:funder",
+        "to": "sc:staking",
+        "egldValue": "50_000_000_000_000_000",
+        "function": "issueStakedNftCollection",
+        "arguments": ["str:CollName", "str:SPOS-000000"],
+        "gasLimit": "75,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "sc:staking": {
+          "balance": "0",
+          "storage": {
+            "str:staked_nft_collection_id": "str:pending",
+            "+": ""
+          }
+        },
+        "+": ""
+      }
+    }
+  ]
+}

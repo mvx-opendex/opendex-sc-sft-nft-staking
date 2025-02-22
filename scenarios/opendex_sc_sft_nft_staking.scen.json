@@ -26,7 +26,8 @@
           "str:SFT-000000",
           "str:REWARD-000000",
           "address:fees",
-          "5"
+          "5",
+          "address:funder"
         ],
         "gasLimit": "5,000,000",
         "gasPrice": "0"
@@ -59,6 +60,17 @@
       },
       "expect": {
         "out": ["5"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getFunder",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["address:funder"]
       }
     }
   ]

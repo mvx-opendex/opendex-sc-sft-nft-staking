@@ -7,7 +7,7 @@
     {
       "step": "setState",
       "accounts": {
-        "address:admin": {
+        "address:funder": {
           "nonce": "0",
           "balance": "0",
           "esdt": {
@@ -44,7 +44,7 @@
       },
       "expect": {
         "status": "4",
-        "message": "str:Endpoint can only be called by admins",
+        "message": "str:Not funder",
         "gas": "*",
         "refund": "*"
       }
@@ -52,7 +52,7 @@
     {
       "step": "scCall",
       "tx": {
-        "from": "address:admin",
+        "from": "address:funder",
         "to": "sc:staking",
         "esdtValue": [],
         "function": "fundRewardsAndSetDuration",
@@ -70,7 +70,7 @@
     {
       "step": "scCall",
       "tx": {
-        "from": "address:admin",
+        "from": "address:funder",
         "to": "sc:staking",
         "esdtValue": [
           {
@@ -93,7 +93,7 @@
     {
       "step": "scCall",
       "tx": {
-        "from": "address:admin",
+        "from": "address:funder",
         "to": "sc:staking",
         "esdtValue": [
           {

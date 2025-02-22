@@ -20,6 +20,21 @@ fn init_go() {
 }
 
 #[test]
+fn issue_nft_collection_go() {
+    world().run("scenarios/issue_nft_collection.scen.json");
+}
+
+#[test]
 fn opendex_sc_sft_nft_staking_go() {
     world().run("scenarios/opendex_sc_sft_nft_staking.scen.json");
+}
+
+#[test]
+fn set_fee_receiver_go() {
+    world().run("scenarios/set_fee_receiver.scen.json");
+}
+
+#[test]
+fn set_performance_fee_go() {
+    world().run("scenarios/set_performance_fee.scen.json");
 }
