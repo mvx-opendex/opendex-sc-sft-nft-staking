@@ -18,7 +18,7 @@
         }
       },
       "currentBlockInfo": {
-        "blockTimestamp": "100_003_600"
+        "blockTimestamp": "100_005_000"
       }
     },
     {
@@ -46,6 +46,28 @@
       }
     },
     {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getLastUpdateTime",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["100_005_000"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getRewardPerTokenStored",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["250_000000_000000000000000000"]
+      }
+    },
+    {
       "step": "checkState",
       "accounts": {
         "address:user2": {
@@ -56,7 +78,7 @@
                 {
                   "nonce": "2",
                   "balance": "1",
-                  "attributes": "u64:12|biguint:2|u64:100_003_600|u64:100_003_600"
+                  "attributes": "u64:12|biguint:2|u64:100_005_000|u64:100_005_000|biguint:250_000000_000000000000000000|biguint:0"
                 }
               ]
             }
@@ -94,6 +116,45 @@
       },
       "expect": {
         "out": ["4"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "250_000000_000000000000000000", "0"]
+      },
+      "expect": {
+        "out": ["0", "0", "0"]
+      }
+    },
+    {
+      "step": "setState",
+      "currentBlockInfo": {
+        "blockTimestamp": "100_010_000"
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "250_000000_000000000000000000", "0"]
+      },
+      "expect": {
+        "out": ["250_000000", "225_000000", "25_000000"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "0", "0"]
+      },
+      "expect": {
+        "out": ["750_000000", "675_000000", "75_000000"]
       }
     }
   ]

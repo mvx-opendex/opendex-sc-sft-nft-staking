@@ -6,15 +6,20 @@ multiversx_sc::imports!();
 multiversx_sc::derive_imports!();
 
 static ISSUE_NFT_COLLECTION_FEE: u64 = 50000000000000000u64;
-static RPS_PRECISION: u64 = 10_000_000_000u64;
+
+static REWARD_RATE_PRECISION: u64 = 10_000_000_000u64;
+
+static SAFETY_CONSTANT: u64 = 1_000_000_000_000_000_000u64;
 
 #[type_abi]
 #[derive(TopEncode, TopDecode)]
 pub struct StakeInfo<M: ManagedTypeApi> {
-    token_nonce: u64,          // SFT nonce staked
-    amount: BigUint<M>,        // Amount of SFTs staked
-    stake_timestamp: u64,      // When staked
-    last_claim_timestamp: u64, // Last reward claim
+    token_nonce: u64,                       // SFT nonce staked
+    amount: BigUint<M>,                     // Amount of SFTs staked
+    stake_timestamp: u64,                   // When staked
+    last_claim_timestamp: u64,              // Last reward claim
+    user_reward_per_token_paid: BigUint<M>, // Reward per token when last user action occurred
+    rewards: BigUint<M>,                    // Earned rewards when last user action occurred
 }
 
 /// A staking contract for SFTs that issues NFTs as staking positions.
@@ -39,9 +44,11 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.fee_receiver().set(&fee_receiver);
         self.performance_fee_percent().set(performance_fee);
         self.total_staked().set(&BigUint::zero());
-        self.reward_start_time().set(0u64);
-        self.reward_period_end().set(0u64);
+        self.reward_start_time().set(0);
+        self.reward_end_time().set(0);
         self.funder().set(&funder);
+        self.last_update_time().set(0);
+        self.reward_per_token_stored().set(BigUint::zero());
     }
 
     // STORAGE
@@ -76,8 +83,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     fn performance_fee_percent(&self) -> SingleValueMapper<u32>;
 
     #[view(getRewardPeriodEnd)]
-    #[storage_mapper("reward_period_end")]
-    fn reward_period_end(&self) -> SingleValueMapper<u64>;
+    #[storage_mapper("reward_end_time")]
+    fn reward_end_time(&self) -> SingleValueMapper<u64>;
 
     #[view(getRewardStartTime)]
     #[storage_mapper("reward_start_time")]
@@ -87,12 +94,24 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     #[storage_mapper("funder")]
     fn funder(&self) -> SingleValueMapper<ManagedAddress>;
 
+    #[view(getLastUpdateTime)]
+    #[storage_mapper("last_update_time")]
+    fn last_update_time(&self) -> SingleValueMapper<u64>;
+
+    #[view(getRewardPerTokenStored)]
+    #[storage_mapper("reward_per_token_stored")]
+    fn reward_per_token_stored(&self) -> SingleValueMapper<BigUint>;
+
     // User endpoints
 
+    /// Stake SFT/NFTs
+    /// Payment: 1 single payment accepted.
     #[endpoint]
     #[payable]
     fn stake(&self) {
         self.staked_nft_collection_id().require_issued_or_set();
+
+        self.update_reward_per_token();
 
         let payment = self.call_value().single_esdt();
         let caller = self.blockchain().get_caller();
@@ -113,6 +132,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             amount: payment.amount.clone(),
             stake_timestamp: current_time,
             last_claim_timestamp: current_time,
+            user_reward_per_token_paid: self.reward_per_token_stored().get(),
+            rewards: BigUint::zero(),
         };
 
         let staked_nft = self
@@ -131,19 +152,14 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     #[endpoint]
     #[payable("*")]
     fn unstake(&self) {
+        self.update_reward_per_token();
+
         let payment = self.call_value().single_esdt();
         let caller = self.blockchain().get_caller();
         let position_nonce = payment.token_nonce;
 
-        let staked_nft_collection_mapper = self.staked_nft_collection_id();
-        let staked_nft_collection_id = staked_nft_collection_mapper.get_token_id();
-
-        // Verify the NFT is sent back
-        require!(
-            payment.token_identifier == staked_nft_collection_id
-                && payment.amount == BigUint::from(1u32),
-            "Must send valid staking position NFT"
-        );
+        // Verify the NFT
+        self.require_valid_staked_nft_payment(payment.clone());
 
         // Get stake info from NFT attributes
         let stake_info = self.decode_nft_attributes(position_nonce);
@@ -164,12 +180,17 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             .update(|total| *total -= &stake_info.amount);
 
         // Burn the NFT
-        staked_nft_collection_mapper.nft_burn(position_nonce, &BigUint::from(1u32));
+        self.staked_nft_collection_id()
+            .nft_burn(position_nonce, &BigUint::from(1u32));
     }
 
+    /// Claim rewards.
+    /// Payment: 1 single "staked NFT"
     #[endpoint(claimRewards)]
-    #[payable("*")]
+    #[payable]
     fn claim_rewards(&self) {
+        self.update_reward_per_token();
+
         let payment = self.call_value().single_esdt();
         let caller = self.blockchain().get_caller();
         let position_nonce = payment.token_nonce;
@@ -177,11 +198,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         let staked_nft_collection_id = self.staked_nft_collection_id().get_token_id();
 
         // Verify the NFT is sent by the claimant
-        require!(
-            payment.token_identifier == staked_nft_collection_id
-                && payment.amount == BigUint::from(1u32),
-            "Must send valid staking position NFT"
-        );
+        self.require_valid_staked_nft_payment(payment.clone());
 
         // Get stake info from NFT attributes
         let stake_info = self.decode_nft_attributes(position_nonce);
@@ -196,6 +213,16 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             position_nonce,
             &BigUint::from(1u32),
         );
+    }
+
+    #[view(getPendingRewards)]
+    fn get_pending_rewards_view(
+        &self,
+        staked_amount: BigUint,
+        user_reward_per_token_paid: BigUint,
+        user_rewards: BigUint,
+    ) -> MultiValue3<BigUint, BigUint, BigUint> {
+        self.get_pending_rewards(&staked_amount, &user_reward_per_token_paid, &user_rewards)
     }
 
     // Funder actions
@@ -250,6 +277,10 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     fn fund_rewards_and_set_duration(&self, duration_in_seconds: u64) {
         self.require_caller_is_funder();
 
+        self.update_reward_per_token();
+
+        require!(self.reward_end_time().get() == 0, "Already started");
+
         let (token_id, amount) = self.call_value().egld_or_single_fungible_esdt();
         let current_time = self.blockchain().get_block_timestamp();
 
@@ -260,11 +291,12 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         require!(amount > BigUint::zero(), "Must provide reward amount");
         require!(duration_in_seconds > 0, "Duration must be greater than 0");
 
-        let reward_per_second = amount * RPS_PRECISION / BigUint::from(duration_in_seconds);
+        let reward_per_second = amount * REWARD_RATE_PRECISION / BigUint::from(duration_in_seconds);
         self.reward_per_second().set(&reward_per_second);
         self.reward_start_time().set(current_time);
-        self.reward_period_end()
+        self.reward_end_time()
             .set(current_time + duration_in_seconds);
+        self.last_update_time().set(current_time);
     }
 
     // Admin endpoints
@@ -315,59 +347,94 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         caller: &ManagedAddress,
         stake_info: &StakeInfo<Self::Api>,
     ) {
-        let current_time = self.blockchain().get_block_timestamp();
-        let reward_start = self.reward_start_time().get();
-        let reward_end = self.reward_period_end().get();
-        let total_staked = self.total_staked().get();
+        let (rewards, user_amount, fee_amount) = self
+            .get_pending_rewards(
+                &stake_info.amount,
+                &stake_info.user_reward_per_token_paid,
+                &stake_info.rewards,
+            )
+            .into_tuple();
 
-        require!(total_staked > BigUint::zero(), "No tokens staked in pool");
+        let reward_token_id = self.reward_token().get();
 
-        let claim_end_time = if current_time > reward_end && reward_end > 0 {
-            reward_end
-        } else {
-            current_time
-        };
-
-        let claim_start_time = if reward_start > stake_info.last_claim_timestamp {
-            reward_start
-        } else {
-            stake_info.last_claim_timestamp
-        };
-
-        let time_diff = if claim_end_time > claim_start_time {
-            claim_end_time - claim_start_time
-        } else {
-            0
-        };
-
-        let total_possible_rewards = &self.reward_per_second().get() * time_diff / RPS_PRECISION;
-        let user_share = &stake_info.amount * &total_possible_rewards / &total_staked;
-
-        if user_share > BigUint::zero() {
-            let fee_percent = BigUint::from(self.performance_fee_percent().get());
-            let fee_amount = &user_share * &fee_percent / &BigUint::from(100u32);
-            let user_amount = &user_share - &fee_amount;
-
+        if rewards > 0 {
             self.send().direct_non_zero(
                 &self.fee_receiver().get(),
-                &self.reward_token().get(),
+                &reward_token_id,
                 0u64,
                 &fee_amount,
             );
 
             self.send()
-                .direct_non_zero(caller, &self.reward_token().get(), 0u64, &user_amount);
+                .direct_non_zero(caller, &reward_token_id, 0u64, &user_amount);
 
             // Update NFT attributes with new last_claim_timestamp
             let updated_stake_info = StakeInfo {
                 token_nonce: stake_info.token_nonce,
                 amount: stake_info.amount.clone(),
                 stake_timestamp: stake_info.stake_timestamp,
-                last_claim_timestamp: claim_end_time,
+                last_claim_timestamp: self.last_update_time().get(),
+                user_reward_per_token_paid: self.reward_per_token_stored().get(),
+                rewards: &stake_info.rewards + &rewards,
             };
 
             self.staked_nft_collection_id()
                 .nft_update_attributes(position_nonce, &updated_stake_info);
         }
+    }
+
+    fn get_pending_rewards(
+        &self,
+        staked_amount: &BigUint,
+        user_reward_per_token_paid: &BigUint,
+        user_rewards: &BigUint,
+    ) -> MultiValue3<BigUint, BigUint, BigUint> {
+        let amount = staked_amount.clone()
+            * (self.current_reward_per_token() - user_reward_per_token_paid)
+            / SAFETY_CONSTANT
+            + user_rewards;
+
+        let fee = &amount * self.performance_fee_percent().get() / 100u32;
+
+        MultiValue3::from((amount.clone(), amount - &fee, fee))
+    }
+
+    fn update_reward_per_token(&self) {
+        self.reward_per_token_stored()
+            .set(self.current_reward_per_token());
+        self.last_update_time()
+            .set(self.last_time_reward_applicable());
+    }
+
+    fn require_valid_staked_nft_payment(&self, payment: EsdtTokenPayment) {
+        require!(
+            payment.token_identifier == self.staked_nft_collection_id().get_token_id()
+                && payment.amount == BigUint::from(1u32),
+            "Invalid staking position NFT"
+        );
+    }
+
+    #[view(getCurrentRewardPerToken)]
+    fn current_reward_per_token(&self) -> BigUint {
+        let reward_per_token_stored = self.reward_per_token_stored().get();
+
+        if self.total_staked().get() == 0 {
+            reward_per_token_stored
+        } else {
+            let time_diff = self.last_time_reward_applicable() - self.last_update_time().get();
+
+            let reward_per_token_increase =
+                (BigUint::from(time_diff) * self.reward_per_second().get() * SAFETY_CONSTANT)
+                    / (self.total_staked().get() * REWARD_RATE_PRECISION);
+
+            reward_per_token_stored + reward_per_token_increase
+        }
+    }
+
+    #[inline]
+    fn last_time_reward_applicable(&self) -> u64 {
+        self.reward_end_time()
+            .get()
+            .min(self.blockchain().get_block_timestamp())
     }
 }

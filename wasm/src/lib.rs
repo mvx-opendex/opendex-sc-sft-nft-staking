@@ -5,9 +5,9 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           20
+// Endpoints:                           25
 // Async Callback:                       1
-// Total number of exported functions:  22
+// Total number of exported functions:  27
 
 #![no_std]
 
@@ -25,15 +25,20 @@ multiversx_sc_wasm_adapter::endpoints! {
         getTotalStaked => total_staked
         getFeeReceiver => fee_receiver
         getPerformanceFeePercent => performance_fee_percent
-        getRewardPeriodEnd => reward_period_end
+        getRewardPeriodEnd => reward_end_time
         getRewardStartTime => reward_start_time
+        getFunder => funder
+        getLastUpdateTime => last_update_time
+        getRewardPerTokenStored => reward_per_token_stored
         stake => stake
         unstake => unstake
         claimRewards => claim_rewards
+        getPendingRewards => get_pending_rewards_view
         issueStakedNftCollection => issue_staked_nft_collection
         fundRewardsAndSetDuration => fund_rewards_and_set_duration
         setPerformanceFeePercent => set_performance_fee_percent
         setFeeReceiver => set_fee_receiver
+        getCurrentRewardPerToken => current_reward_per_token
         isAdmin => is_admin
         addAdmin => add_admin
         removeAdmin => remove_admin

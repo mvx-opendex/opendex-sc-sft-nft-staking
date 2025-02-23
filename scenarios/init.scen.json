@@ -20,7 +20,11 @@
           "esdt": {
             "str:SPOS-000000": {
               "lastNonce": "0",
-              "roles": ["ESDTRoleNFTBurn", "ESDTRoleNFTCreate"]
+              "roles": [
+                "ESDTRoleNFTBurn",
+                "ESDTRoleNFTCreate",
+                "ESDTRoleNFTUpdateAttributes"
+              ]
             }
           },
           "owner": "address:owner",

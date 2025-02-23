@@ -9,6 +9,31 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
+fn claim_rewards_1_alone_full_rs() {
+    world().run("scenarios/claim_rewards_1_alone_full.scen.json");
+}
+
+#[test]
+fn claim_rewards_1_alone_half_rs() {
+    world().run("scenarios/claim_rewards_1_alone_half.scen.json");
+}
+
+#[test]
+fn claim_rewards_2_10_000_rs() {
+    world().run("scenarios/claim_rewards_2_10_000.scen.json");
+}
+
+#[test]
+fn claim_rewards_2_7_500_rs() {
+    world().run("scenarios/claim_rewards_2_7_500.scen.json");
+}
+
+#[test]
+fn claim_rewards_errors_rs() {
+    world().run("scenarios/claim_rewards_errors.scen.json");
+}
+
+#[test]
 fn fund_and_start_rs() {
     world().run("scenarios/fund_and_start.scen.json");
 }
@@ -56,4 +81,19 @@ fn stake_2_rs() {
 #[test]
 fn stake_errors_rs() {
     world().run("scenarios/stake_errors.scen.json");
+}
+
+#[test]
+fn unstake_1_alone_full_rs() {
+    world().run("scenarios/unstake_1_alone_full.scen.json");
+}
+
+#[test]
+fn unstake_1_alone_half_rs() {
+    world().run("scenarios/unstake_1_alone_half.scen.json");
+}
+
+#[test]
+fn unstake_errors_rs() {
+    world().run("scenarios/unstake_errors.scen.json");
 }
