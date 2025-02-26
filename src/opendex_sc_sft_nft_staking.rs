@@ -147,6 +147,9 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         // Update total staked
         self.total_staked()
             .update(|total| *total += &payment.amount);
+
+        // Emit stake event
+        self.stake_event(&caller, &payment.amount, payment.token_nonce);
     }
 
     #[endpoint]
@@ -443,4 +446,14 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             .get()
             .min(self.blockchain().get_block_timestamp())
     }
+
+    // EVENTS
+
+    #[event("stake")]
+    fn stake_event(
+        &self,
+        #[indexed] user: &ManagedAddress,
+        #[indexed] amount: &BigUint,
+        #[indexed] nonce: u64,
+    );
 }
