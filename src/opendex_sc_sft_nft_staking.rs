@@ -167,14 +167,6 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         // Claim rewards
         self.claim_rewards_internal(position_nonce, &caller, &stake_info);
 
-        // Return SFTs
-        self.send().direct_esdt(
-            &caller,
-            &self.staking_sft_collection_id().get(),
-            stake_info.token_nonce,
-            &stake_info.amount,
-        );
-
         // Clean up
         self.total_staked()
             .update(|total| *total -= &stake_info.amount);
@@ -182,6 +174,14 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         // Burn the NFT
         self.staked_nft_collection_id()
             .nft_burn(position_nonce, &BigUint::from(1u32));
+
+        // Return SFTs
+        self.send().direct_esdt(
+            &caller,
+            &self.staking_sft_collection_id().get(),
+            stake_info.token_nonce,
+            &stake_info.amount,
+        );
     }
 
     /// Claim rewards.
@@ -358,16 +358,6 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         let reward_token_id = self.reward_token().get();
 
         if rewards > 0 {
-            self.send().direct_non_zero(
-                &self.fee_receiver().get(),
-                &reward_token_id,
-                0u64,
-                &fee_amount,
-            );
-
-            self.send()
-                .direct_non_zero(caller, &reward_token_id, 0u64, &user_amount);
-
             // Update NFT attributes with new last_claim_timestamp
             let updated_stake_info = StakeInfo {
                 token_nonce: stake_info.token_nonce,
@@ -380,6 +370,16 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
             self.staked_nft_collection_id()
                 .nft_update_attributes(position_nonce, &updated_stake_info);
+
+            self.send().direct_non_zero(
+                &self.fee_receiver().get(),
+                &reward_token_id,
+                0u64,
+                &fee_amount,
+            );
+
+            self.send()
+                .direct_non_zero(caller, &reward_token_id, 0u64, &user_amount);
         }
     }
 
