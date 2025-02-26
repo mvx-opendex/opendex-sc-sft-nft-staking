@@ -314,6 +314,12 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.fee_receiver().set(&new_receiver);
     }
 
+    #[only_admin]
+    #[endpoint(setFunder)]
+    fn set_funder(&self, new_account: ManagedAddress) {
+        self.funder().set(&new_account);
+    }
+
     // Functions
 
     fn require_caller_is_funder(&self) {
