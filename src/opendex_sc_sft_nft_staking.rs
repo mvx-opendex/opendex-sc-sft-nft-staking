@@ -140,13 +140,13 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             .staked_nft_collection_id()
             .nft_create(nft_amount.clone(), &stake_info);
 
-        // Send NFT to user
-        self.send()
-            .direct_non_zero_esdt_payment(&caller, &staked_nft);
-
         // Update total staked
         self.total_staked()
             .update(|total| *total += &payment.amount);
+
+        // Send NFT to user
+        self.send()
+            .direct_non_zero_esdt_payment(&caller, &staked_nft);
 
         // Emit stake event
         self.stake_event(&caller, &payment.amount, payment.token_nonce);
