@@ -42,7 +42,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             .set(&staking_sft_collection_id);
         self.reward_token().set(&reward_token);
         self.fee_receiver().set(&fee_receiver);
-        self.performance_fee_percent().set(performance_fee);
+        self.set_performance_fee_percent(performance_fee);
         self.total_staked().set(&BigUint::zero());
         self.reward_end_time().set(0);
         self.funder().set(&funder);
@@ -282,11 +282,16 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         self.update_reward_per_token();
 
-        require!(self.reward_end_time().get() == 0, "Already started");
-
-        let (token_id, amount) = self.call_value().egld_or_single_fungible_esdt();
         let current_time = self.blockchain().get_block_timestamp();
 
+        require!(self.reward_end_time().get() < current_time, "Not ended");
+
+        let (token_id, amount) = self.call_value().egld_or_single_fungible_esdt();
+
+        require!(
+            amount < BigUint::from(10u64).pow(40),
+            "Reward amount too large"
+        );
         require!(
             token_id == self.reward_token().get(),
             "Invalid reward token"
@@ -305,9 +310,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
     #[only_admin]
     #[endpoint(setPerformanceFeePercent)]
-    fn set_performance_fee_percent(&self, fee_percent: u32) {
-        require!(fee_percent <= 100, "Fee percent must be between 0 and 100");
-        self.performance_fee_percent().set(fee_percent);
+    fn set_performance_fee_percent_endpoint(&self, fee_percent: u32) {
+        self.set_performance_fee_percent(fee_percent);
     }
 
     #[only_admin]
@@ -446,6 +450,12 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.reward_end_time()
             .get()
             .min(self.blockchain().get_block_timestamp())
+    }
+
+    #[inline]
+    fn set_performance_fee_percent(&self, fee_percent: u32) {
+        require!(fee_percent <= 100, "Fee percent must be between 0 and 100");
+        self.performance_fee_percent().set(fee_percent);
     }
 
     // EVENTS

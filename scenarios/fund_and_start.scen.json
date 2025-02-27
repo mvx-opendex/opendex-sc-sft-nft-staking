@@ -82,7 +82,7 @@
       },
       "expect": {
         "status": "4",
-        "message": "str:Already started",
+        "message": "str:Not ended",
         "gas": "*",
         "refund": "*"
       }
