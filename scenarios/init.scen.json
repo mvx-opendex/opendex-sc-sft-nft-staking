@@ -36,7 +36,6 @@
             "str:only_admin_module:admins.index|address:admin": "u32:1",
             "str:performance_fee_percent": "u32:10",
             "str:reward_period_end": "u64:0",
-            "str:reward_start_time": "u64:0",
             "str:reward_token": "str:REWARD-000000",
             "str:staked_nft_collection_id": "str:SPOS-000000",
             "str:staking_sft_collection_id": "str:SFT-000000",

@@ -44,7 +44,6 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.fee_receiver().set(&fee_receiver);
         self.set_performance_fee_percent(performance_fee);
         self.total_staked().set(&BigUint::zero());
-        self.reward_start_time().set(0);
         self.reward_end_time().set(0);
         self.funder().set(&funder);
         self.last_update_time().set(0);
