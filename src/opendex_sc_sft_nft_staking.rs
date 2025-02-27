@@ -388,6 +388,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
             self.send()
                 .direct_non_zero(caller, &reward_token_id, 0u64, &user_amount);
+
+            self.claim_event(&caller, &user_amount, &fee_amount);
         }
     }
 
@@ -462,5 +464,13 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         #[indexed] user: &ManagedAddress,
         #[indexed] amount: &BigUint,
         #[indexed] nonce: u64,
+    );
+
+    #[event("claim")]
+    fn claim_event(
+        &self,
+        #[indexed] user: &ManagedAddress,
+        #[indexed] user_amount: &BigUint,
+        #[indexed] fee_amount: &BigUint,
     );
 }
