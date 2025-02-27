@@ -171,8 +171,10 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.claim_rewards_internal(position_nonce, &caller, &stake_info);
 
         // Clean up
-        self.total_staked()
-            .update(|total| *total -= &stake_info.amount);
+        self.total_staked().update(|total| {
+            require!(*total >= stake_info.amount, "Total staked underflow");
+            *total -= &stake_info.amount;
+        });
 
         // Burn the NFT
         self.staked_nft_collection_id()
