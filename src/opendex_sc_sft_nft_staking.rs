@@ -169,7 +169,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         let stake_info = self.decode_nft_attributes(position_nonce);
 
         // Claim rewards
-        self.claim_rewards_internal(position_nonce, &caller, &stake_info);
+        let (user_rewards_payment, fee_rewards_payment) =
+            self.claim_rewards_internal(position_nonce, &caller, &stake_info);
 
         // Clean up
         self.total_staked().update(|total| {
@@ -187,6 +188,22 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             &self.staking_sft_collection_id().get(),
             stake_info.token_nonce,
             &stake_info.amount,
+        );
+
+        // Send rewards
+        self.send().direct_non_zero(
+            &caller,
+            &user_rewards_payment.token_identifier,
+            user_rewards_payment.token_nonce,
+            &user_rewards_payment.amount,
+        );
+
+        // Send fees
+        self.send().direct_non_zero(
+            &self.fee_receiver().get(),
+            &fee_rewards_payment.token_identifier,
+            fee_rewards_payment.token_nonce,
+            &fee_rewards_payment.amount,
         );
 
         // Emit event
@@ -213,7 +230,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         let stake_info = self.decode_nft_attributes(position_nonce);
 
         // Claim rewards
-        self.claim_rewards_internal(position_nonce, &caller, &stake_info);
+        let (user_rewards_payment, fee_rewards_payment) =
+            self.claim_rewards_internal(position_nonce, &caller, &stake_info);
 
         // Send the NFT back to the caller
         self.send().direct_esdt(
@@ -221,6 +239,22 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             &staked_nft_collection_id,
             position_nonce,
             &BigUint::from(1u32),
+        );
+
+        // Send rewards
+        self.send().direct_non_zero(
+            &caller,
+            &user_rewards_payment.token_identifier,
+            user_rewards_payment.token_nonce,
+            &user_rewards_payment.amount,
+        );
+
+        // Send fees
+        self.send().direct_non_zero(
+            &self.fee_receiver().get(),
+            &fee_rewards_payment.token_identifier,
+            fee_rewards_payment.token_nonce,
+            &fee_rewards_payment.amount,
         );
     }
 
@@ -370,7 +404,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         position_nonce: u64,
         caller: &ManagedAddress,
         stake_info: &StakeInfo<Self::Api>,
-    ) {
+    ) -> (EgldOrEsdtTokenPayment, EgldOrEsdtTokenPayment) {
         let (rewards, user_amount, fee_amount) = self
             .get_pending_rewards(
                 &stake_info.amount,
@@ -395,17 +429,17 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             self.staked_nft_collection_id()
                 .nft_update_attributes(position_nonce, &updated_stake_info);
 
-            self.send().direct_non_zero(
-                &self.fee_receiver().get(),
-                &reward_token_id,
-                0u64,
-                &fee_amount,
-            );
-
-            self.send()
-                .direct_non_zero(caller, &reward_token_id, 0u64, &user_amount);
-
             self.claim_event(&caller, &user_amount, &fee_amount);
+
+            (
+                EgldOrEsdtTokenPayment::new(reward_token_id.clone(), 0u64, user_amount),
+                EgldOrEsdtTokenPayment::new(reward_token_id.clone(), 0u64, fee_amount),
+            )
+        } else {
+            (
+                EgldOrEsdtTokenPayment::new(reward_token_id.clone(), 0u64, BigUint::zero()),
+                EgldOrEsdtTokenPayment::new(reward_token_id.clone(), 0u64, BigUint::zero()),
+            )
         }
     }
 
