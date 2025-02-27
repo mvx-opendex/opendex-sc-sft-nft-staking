@@ -36,7 +36,7 @@ multiversx_sc_wasm_adapter::endpoints! {
         getPendingRewards => get_pending_rewards_view
         issueStakedNftCollection => issue_staked_nft_collection
         fundRewardsAndSetDuration => fund_rewards_and_set_duration
-        setPerformanceFeePercent => set_performance_fee_percent
+        setPerformanceFeePercent => set_performance_fee_percent_endpoint
         setFeeReceiver => set_fee_receiver
         setFunder => set_funder
         getCurrentRewardPerToken => current_reward_per_token

@@ -1,0 +1,177 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "stake_2.scen.json"
+    },
+    {
+      "step": "setState",
+      "currentBlockInfo": {
+        "blockTimestamp": "100_010_000"
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "0", "0"]
+      },
+      "expect": {
+        "out": ["750_000000", "675_000000", "75_000000"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "250_000000_000000000000000000", "0"]
+      },
+      "expect": {
+        "out": ["250_000000", "225_000000", "25_000000"]
+      }
+    },
+    {
+      "step": "setState",
+      "currentBlockInfo": {
+        "blockTimestamp": "100_015_000"
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "0", "0"]
+      },
+      "expect": {
+        "out": ["750_000000", "675_000000", "75_000000"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "250_000000_000000000000000000", "0"]
+      },
+      "expect": {
+        "out": ["250_000000", "225_000000", "25_000000"]
+      }
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:funder": {
+          "nonce": "0",
+          "balance": "0",
+          "esdt": {
+            "str:REWARD-000000": "400,000000"
+          }
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:funder",
+        "to": "sc:staking",
+        "esdtValue": [
+          {
+            "tokenIdentifier": "str:REWARD-000000",
+            "value": "400_000000"
+          }
+        ],
+        "function": "fundRewardsAndSetDuration",
+        "arguments": ["1_000"],
+        "gasLimit": "10,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "0", "0"]
+      },
+      "expect": {
+        "out": ["750_000000", "675_000000", "75_000000"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "250_000000_000000000000000000", "0"]
+      },
+      "expect": {
+        "out": ["250_000000", "225_000000", "25_000000"]
+      }
+    },
+    {
+      "step": "setState",
+      "currentBlockInfo": {
+        "blockTimestamp": "100_016_000"
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "0", "0"]
+      },
+      "expect": {
+        "out": ["950_000000", "855_000000", "95_000000"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "250_000000_000000000000000000", "0"]
+      },
+      "expect": {
+        "out": ["450_000000", "405_000000", "45_000000"]
+      }
+    },
+    {
+      "step": "setState",
+      "currentBlockInfo": {
+        "blockTimestamp": "100_020_000"
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "0", "0"]
+      },
+      "expect": {
+        "out": ["950_000000", "855_000000", "95_000000"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["2", "250_000000_000000000000000000", "0"]
+      },
+      "expect": {
+        "out": ["450_000000", "405_000000", "45_000000"]
+      }
+    }
+  ]
+}

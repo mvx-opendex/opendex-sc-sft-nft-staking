@@ -55,6 +55,16 @@ fn opendex_sc_sft_nft_staking_go() {
 }
 
 #[test]
+fn restart_rewards_1_alone_go() {
+    world().run("scenarios/restart_rewards_1_alone.scen.json");
+}
+
+#[test]
+fn restart_rewards_2_go() {
+    world().run("scenarios/restart_rewards_2.scen.json");
+}
+
+#[test]
 fn set_fee_receiver_go() {
     world().run("scenarios/set_fee_receiver.scen.json");
 }
