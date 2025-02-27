@@ -185,6 +185,9 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             stake_info.token_nonce,
             &stake_info.amount,
         );
+
+        // Emit event
+        self.unstake_event(&caller, &stake_info.amount, stake_info.token_nonce);
     }
 
     /// Claim rewards.
@@ -451,6 +454,14 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
     #[event("stake")]
     fn stake_event(
+        &self,
+        #[indexed] user: &ManagedAddress,
+        #[indexed] amount: &BigUint,
+        #[indexed] nonce: u64,
+    );
+
+    #[event("unstake")]
+    fn unstake_event(
         &self,
         #[indexed] user: &ManagedAddress,
         #[indexed] amount: &BigUint,
