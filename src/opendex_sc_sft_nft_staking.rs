@@ -306,7 +306,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         let reward_per_second = amount * REWARD_RATE_PRECISION / BigUint::from(duration_in_seconds);
         self.reward_per_second().set(&reward_per_second);
-        self.reward_start_time().set(current_time);
+        self.reward_start_time().set_if_empty(current_time);
         self.reward_end_time()
             .set(current_time + duration_in_seconds);
         self.last_update_time().set(current_time);
