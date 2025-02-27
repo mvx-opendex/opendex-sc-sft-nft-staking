@@ -11,6 +11,10 @@
           "nonce": "0",
           "balance": "0"
         },
+        "address:funder": {
+          "nonce": "1",
+          "balance": "0"
+        },
         "address:owner": {
           "nonce": "1",
           "balance": "0"

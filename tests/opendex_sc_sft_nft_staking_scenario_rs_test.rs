@@ -79,6 +79,16 @@ fn set_fee_receiver_rs() {
 }
 
 #[test]
+fn set_funder_rs() {
+    world().run("scenarios/set_funder.scen.json");
+}
+
+#[test]
+fn set_funder_not_admin_rs() {
+    world().run("scenarios/set_funder_not_admin.scen.json");
+}
+
+#[test]
 fn set_performance_fee_rs() {
     world().run("scenarios/set_performance_fee.scen.json");
 }
