@@ -103,7 +103,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
     // User endpoints
 
-    /// Stake SFT/NFTs
+    /// Stake SFT/NFTs.
     /// Payment: 1 single payment accepted.
     #[endpoint]
     #[payable]
@@ -151,6 +151,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.stake_event(&caller, &payment.amount, payment.token_nonce);
     }
 
+    /// Untake SFT/NFTs by sending a staked NFT receipt.
+    /// Payment: 1 single payment accepted.
     #[endpoint]
     #[payable("*")]
     fn unstake(&self) {
@@ -192,7 +194,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     }
 
     /// Claim rewards.
-    /// Payment: 1 single "staked NFT"
+    /// Payment: 1 single "staked NFT".
     #[endpoint(claimRewards)]
     #[payable]
     fn claim_rewards(&self) {
