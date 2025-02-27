@@ -127,6 +127,17 @@
       "step": "scQuery",
       "tx": {
         "to": "sc:staking",
+        "function": "getRewardStartTime",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["0"]
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
         "function": "getStakedNftCollectionId",
         "arguments": []
       },
