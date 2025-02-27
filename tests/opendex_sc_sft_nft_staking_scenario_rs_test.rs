@@ -19,6 +19,11 @@ fn claim_rewards_1_alone_half_rs() {
 }
 
 #[test]
+fn claim_rewards_1_no_reward_rs() {
+    world().run("scenarios/claim_rewards_1_no_reward.scen.json");
+}
+
+#[test]
 fn claim_rewards_2_10_000_rs() {
     world().run("scenarios/claim_rewards_2_10_000.scen.json");
 }
@@ -101,6 +106,11 @@ fn unstake_1_alone_full_rs() {
 #[test]
 fn unstake_1_alone_half_rs() {
     world().run("scenarios/unstake_1_alone_half.scen.json");
+}
+
+#[test]
+fn unstake_1_no_reward_rs() {
+    world().run("scenarios/unstake_1_no_reward.scen.json");
 }
 
 #[test]
