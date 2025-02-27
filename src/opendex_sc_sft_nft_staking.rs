@@ -353,10 +353,15 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             )
             .attributes;
 
-        serializer.top_decode_from_managed_buffer_custom_message(
-            &nft_attributes,
-            "Invalid NFT attributes",
-        )
+        let stake_info: StakeInfo<Self::Api> = serializer
+            .top_decode_from_managed_buffer_custom_message(
+                &nft_attributes,
+                "Invalid NFT attributes",
+            );
+
+        require!(stake_info.amount > 0, "Stake amount must be positive");
+
+        stake_info
     }
 
     fn claim_rewards_internal(
