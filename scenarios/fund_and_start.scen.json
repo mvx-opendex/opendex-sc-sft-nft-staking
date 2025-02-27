@@ -57,17 +57,6 @@
       "step": "scQuery",
       "tx": {
         "to": "sc:staking",
-        "function": "getRewardStartTime",
-        "arguments": []
-      },
-      "expect": {
-        "out": ["100_000_000"]
-      }
-    },
-    {
-      "step": "scQuery",
-      "tx": {
-        "to": "sc:staking",
         "function": "getRewardPeriodEnd",
         "arguments": []
       },

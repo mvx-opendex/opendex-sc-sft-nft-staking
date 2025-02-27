@@ -5,9 +5,9 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           26
+// Endpoints:                           25
 // Async Callback:                       1
-// Total number of exported functions:  28
+// Total number of exported functions:  27
 
 #![no_std]
 
@@ -26,7 +26,6 @@ multiversx_sc_wasm_adapter::endpoints! {
         getFeeReceiver => fee_receiver
         getPerformanceFeePercent => performance_fee_percent
         getRewardPeriodEnd => reward_end_time
-        getRewardStartTime => reward_start_time
         getFunder => funder
         getLastUpdateTime => last_update_time
         getRewardPerTokenStored => reward_per_token_stored

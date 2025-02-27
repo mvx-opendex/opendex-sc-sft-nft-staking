@@ -44,7 +44,6 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.fee_receiver().set(&fee_receiver);
         self.performance_fee_percent().set(performance_fee);
         self.total_staked().set(&BigUint::zero());
-        self.reward_start_time().set(0);
         self.reward_end_time().set(0);
         self.funder().set(&funder);
         self.last_update_time().set(0);
@@ -85,10 +84,6 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     #[view(getRewardPeriodEnd)]
     #[storage_mapper("reward_end_time")]
     fn reward_end_time(&self) -> SingleValueMapper<u64>;
-
-    #[view(getRewardStartTime)]
-    #[storage_mapper("reward_start_time")]
-    fn reward_start_time(&self) -> SingleValueMapper<u64>;
 
     #[view(getFunder)]
     #[storage_mapper("funder")]
@@ -301,7 +296,6 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         let reward_per_second = amount * REWARD_RATE_PRECISION / BigUint::from(duration_in_seconds);
         self.reward_per_second().set(&reward_per_second);
-        self.reward_start_time().set(current_time);
         self.reward_end_time()
             .set(current_time + duration_in_seconds);
         self.last_update_time().set(current_time);
