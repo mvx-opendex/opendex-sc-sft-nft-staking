@@ -100,6 +100,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "multiversx-sc-modules"
+version = "0.56.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b908ffd35d77f97bfabb16fe86541b1cefead3363f656986605e7c8048104ca"
+dependencies = [
+ "multiversx-sc",
+]
+
+[[package]]
 name = "multiversx-sc-wasm-adapter"
 version = "0.56.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -131,6 +140,7 @@ name = "opendex-sc-sft-nft-staking-controller"
 version = "0.0.0"
 dependencies = [
  "multiversx-sc",
+ "multiversx-sc-modules",
 ]
 
 [[package]]

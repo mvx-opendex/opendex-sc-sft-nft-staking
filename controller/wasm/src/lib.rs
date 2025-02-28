@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            0
+// Endpoints:                           18
 // Async Callback (empty):               1
-// Total number of exported functions:   3
+// Total number of exported functions:  21
 
 #![no_std]
 
@@ -20,6 +20,24 @@ multiversx_sc_wasm_adapter::endpoints! {
     (
         init => init
         upgrade => upgrade
+        setDefaultFeeReceiver => set_default_fee_receiver
+        setDefaultPerformanceFeePercent => set_default_performance_fee_percent
+        setScTemplateAddress => set_sc_template_address
+        getDefaultFeeReceiver => default_fee_receiver
+        getDefaultPerformanceFeePercent => default_performance_fee_percent
+        getScTemplateAddress => sc_template_address
+        deployStaking => deploy_staking
+        upgradeStaking => upgrade_staking
+        removeContract => remove_contract
+        getContractsAndStatuses => get_contracts_and_statuses
+        getAllContracts => get_all_contracts
+        getContract => contract
+        harvestFees => harvest_fees
+        setDeploymentFee => set_deployment_fee
+        getDeploymentFee => deployment_fee
+        pause => pause_endpoint
+        unpause => unpause_endpoint
+        isPaused => paused_status
     )
 }
 

@@ -1,0 +1,75 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "opendex_sc_sft_nft_staking_controller.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:anon": {
+          "nonce": "1",
+          "balance": "0"
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:anon",
+        "to": "sc:controller",
+        "function": "setDeploymentFee",
+        "arguments": ["0"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Endpoint can only be called by owner",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:controller",
+        "function": "setDeploymentFee",
+        "arguments": ["1,000000000000000000"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "sc:controller": {
+          "code": "*",
+          "storage": {
+            "str:deployment_fee": "1,000000000000000000",
+            "+": ""
+          }
+        },
+        "+": ""
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:controller",
+        "function": "getDeploymentFee",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["1,000000000000000000"]
+      }
+    }
+  ]
+}

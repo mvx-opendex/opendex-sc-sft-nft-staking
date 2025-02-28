@@ -1,0 +1,107 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "opendex_sc_sft_nft_staking_controller.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:user": {
+          "balance": "1,000000000000000000",
+          "nonce": "1"
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:user",
+        "to": "sc:controller",
+        "function": "upgradeStaking",
+        "arguments": ["address:sc"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Contract not found",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:fees": {
+          "nonce": "1"
+        },
+        "address:user": {
+          "balance": "1,000000000000000000",
+          "nonce": "1"
+        },
+        "sc:controller": {
+          "code": "file:../output/opendex-sc-sft-nft-staking-controller.wasm",
+          "owner": "address:owner",
+          "storage": {
+            "str:contract|address:sc": "address:sc|address:other"
+          }
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:user",
+        "to": "sc:controller",
+        "function": "upgradeStaking",
+        "arguments": ["address:sc"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Not owner",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:fees": {
+          "nonce": "1"
+        },
+        "address:user": {
+          "balance": "1,000000000000000000",
+          "nonce": "1"
+        },
+        "sc:controller": {
+          "code": "file:../output/opendex-sc-sft-nft-staking-controller.wasm",
+          "owner": "address:owner",
+          "storage": {
+            "str:contract|address:sc": "address:sc|address:other",
+            "str:pause_module:paused": "true"
+          }
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:user",
+        "to": "sc:controller",
+        "function": "upgradeStaking",
+        "arguments": ["address:sc"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Contract is paused",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

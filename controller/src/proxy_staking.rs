@@ -311,6 +311,15 @@ where
             .original_result()
     }
 
+    pub fn get_status(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, Status<Env::Api>> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("getStatus")
+            .original_result()
+    }
+
     pub fn is_admin<
         Arg0: ProxyArg<ManagedAddress<Env::Api>>,
     >(
@@ -358,4 +367,21 @@ where
             .raw_call("getAdmins")
             .original_result()
     }
+}
+
+#[type_abi]
+#[derive(ManagedVecItem, NestedEncode, NestedDecode, TopEncode, TopDecode)]
+pub struct Status<Api>
+where
+    Api: ManagedTypeApi,
+{
+    pub staking_sft_collection_id: TokenIdentifier<Api>,
+    pub total_staked: BigUint<Api>,
+    pub reward_token: EgldOrEsdtTokenIdentifier<Api>,
+    pub staked_nft_collection_id: Option<TokenIdentifier<Api>>,
+    pub reward_start_time: u64,
+    pub reward_end_time: u64,
+    pub fee_receiver: ManagedAddress<Api>,
+    pub performance_fee: u32,
+    pub funder: ManagedAddress<Api>,
 }

@@ -1,0 +1,75 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "opendex_sc_sft_nft_staking_controller.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:anon": {
+          "nonce": "1",
+          "balance": "0"
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:anon",
+        "to": "sc:controller",
+        "function": "setDefaultPerformanceFeePercent",
+        "arguments": ["0"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Endpoint can only be called by owner",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:controller",
+        "function": "setDefaultPerformanceFeePercent",
+        "arguments": ["100"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "sc:controller": {
+          "code": "*",
+          "storage": {
+            "str:default_performance_fee_percent": "100",
+            "+": ""
+          }
+        },
+        "+": ""
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:controller",
+        "function": "getDefaultPerformanceFeePercent",
+        "arguments": []
+      },
+      "expect": {
+        "out": ["100"]
+      }
+    }
+  ]
+}

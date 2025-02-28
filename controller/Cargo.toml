@@ -8,6 +8,9 @@ authors = ["you"]
 [lib]
 path = "src/opendex_sc_sft_nft_staking_controller.rs"
 
+[dependencies]
+multiversx-sc-modules = "0.56.1"
+
 [dependencies.multiversx-sc]
 version = "0.56.1"
 

@@ -1,0 +1,43 @@
+{
+  "steps": [
+    {
+      "step": "setState",
+      "accounts": {
+        "address:fees": {
+          "nonce": "1"
+        },
+        "address:user": {
+          "balance": "1,000000000000000000",
+          "nonce": "1"
+        },
+        "sc:controller": {
+          "code": "file:../output/opendex-sc-sft-nft-staking-controller.wasm",
+          "owner": "address:owner",
+          "storage": {
+            "str:default_fee_receiver": "address:fees",
+            "str:default_performance_fee_percent": "100",
+            "str:deployment_fee": "1,000000000000000000",
+            "str:sc_template_address": "address:real"
+          }
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:user",
+        "to": "sc:controller",
+        "function": "removeContract",
+        "arguments": ["sc:contract"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Endpoint can only be called by owner",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

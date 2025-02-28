@@ -23,7 +23,7 @@
       "tx": {
         "from": "address:owner",
         "contractCode": "mxsc:../output/opendex-sc-sft-nft-staking-controller.mxsc.json",
-        "arguments": [],
+        "arguments": ["address:template"],
         "gasLimit": "5,000,000",
         "gasPrice": "0"
       },
