@@ -2,6 +2,8 @@
 resolver = "2"
 
 members = [
+    "controller",
+    "controller/meta",
     "staking",
     "staking/meta",
 ]

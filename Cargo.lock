@@ -648,6 +648,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "opendex-sc-sft-nft-staking-controller"
+version = "0.0.0"
+dependencies = [
+ "multiversx-sc",
+ "multiversx-sc-scenario",
+ "num-bigint",
+]
+
+[[package]]
+name = "opendex-sc-sft-nft-staking-controller-meta"
+version = "0.0.0"
+dependencies = [
+ "multiversx-sc-meta-lib",
+ "opendex-sc-sft-nft-staking-controller",
+]
+
+[[package]]
 name = "opendex-sc-sft-nft-staking-meta"
 version = "0.0.0"
 dependencies = [

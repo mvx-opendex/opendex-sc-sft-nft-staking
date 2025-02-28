@@ -6,9 +6,7 @@ DOCKER_OUTPUT_FOLDER=./output-docker
 
 cargo install cargo-llvm-cov
 
-sc-meta all proxy
-
-sc-meta all build
+sh ./build_wasm.sh
 
 sc-meta test-gen
 
