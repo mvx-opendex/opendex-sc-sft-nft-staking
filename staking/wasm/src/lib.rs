@@ -5,9 +5,9 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           26
+// Endpoints:                           27
 // Async Callback:                       1
-// Total number of exported functions:  28
+// Total number of exported functions:  29
 
 #![no_std]
 
@@ -40,6 +40,7 @@ multiversx_sc_wasm_adapter::endpoints! {
         setFeeReceiver => set_fee_receiver
         setFunder => set_funder
         getCurrentRewardPerToken => current_reward_per_token
+        getStatus => get_status
         isAdmin => is_admin
         addAdmin => add_admin
         removeAdmin => remove_admin

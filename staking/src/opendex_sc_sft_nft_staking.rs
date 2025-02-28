@@ -22,6 +22,20 @@ pub struct StakeInfo<M: ManagedTypeApi> {
     rewards: BigUint<M>,                    // Earned rewards when last user action occurred
 }
 
+#[type_abi]
+#[derive(ManagedVecItem, NestedEncode, NestedDecode, TopEncode, TopDecode)]
+pub struct Status<M: ManagedTypeApi> {
+    staking_sft_collection_id: TokenIdentifier<M>,
+    total_staked: BigUint<M>,
+    reward_token: EgldOrEsdtTokenIdentifier<M>,
+    staked_nft_collection_id: Option<TokenIdentifier<M>>,
+    reward_start_time: u64,
+    reward_end_time: u64,
+    fee_receiver: ManagedAddress<M>,
+    performance_fee: u32,
+    funder: ManagedAddress<M>,
+}
+
 /// A staking contract for SFTs that issues NFTs as staking positions.
 /// Users stake SFTs, receive NFTs, and earn rewards over time.
 #[multiversx_sc::contract]
@@ -488,6 +502,26 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
                     / (self.total_staked().get() * REWARD_RATE_PRECISION);
 
             reward_per_token_stored + reward_per_token_increase
+        }
+    }
+
+    #[view(getStatus)]
+    fn get_status(&self) -> Status<Self::Api> {
+        let staked_nft_collection = self.staked_nft_collection_id();
+        Status {
+            fee_receiver: self.fee_receiver().get(),
+            funder: self.funder().get(),
+            performance_fee: self.performance_fee_percent().get(),
+            reward_token: self.reward_token().get(),
+            staking_sft_collection_id: self.staking_sft_collection_id().get(),
+            total_staked: self.total_staked().get(),
+            staked_nft_collection_id: if staked_nft_collection.get_token_state().is_set() {
+                Some(staked_nft_collection.get_token_id())
+            } else {
+                None
+            },
+            reward_start_time: self.reward_start_time().get(),
+            reward_end_time: self.reward_end_time().get(),
         }
     }
 
