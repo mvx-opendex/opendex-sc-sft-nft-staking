@@ -1,0 +1,8 @@
+[settings]
+main = "main"
+
+[contracts.main]
+name = "opendex-sc-sft-nft-staking"
+
+#[[proxy]]
+#path = "../controller/src/proxy_staking.rs"
