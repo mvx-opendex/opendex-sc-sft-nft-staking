@@ -7,4 +7,5 @@ coverage/*
 */target/
 
 # The mxpy output
-/output*/
+/output*
+*/output*
