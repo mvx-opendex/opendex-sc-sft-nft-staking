@@ -31,6 +31,7 @@ pub struct Status<M: ManagedTypeApi> {
     staked_nft_collection_id: Option<TokenIdentifier<M>>,
     reward_start_time: u64,
     reward_end_time: u64,
+    reward_per_second: BigUint<M>,
     fee_receiver: ManagedAddress<M>,
     performance_fee: u32,
     funder: ManagedAddress<M>,
@@ -522,6 +523,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             },
             reward_start_time: self.reward_start_time().get(),
             reward_end_time: self.reward_end_time().get(),
+            reward_per_second: self.reward_per_second().get(),
         }
     }
 

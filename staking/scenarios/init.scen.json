@@ -164,9 +164,10 @@
             "04-staked_nft_collection_id": "u8:1|nested:str:SPOS-000000",
             "05-reward_start_time": "u64:0",
             "06-reward_end_time": "u64:0",
-            "07-fee_receiver": "address:fee",
-            "08-performance_fee": "u32:10",
-            "09-funder": "address:funder"
+            "07-reward_per_second": "biguint:0",
+            "08-fee_receiver": "address:fee",
+            "09-performance_fee": "u32:10",
+            "10-funder": "address:funder"
           }
         ]
       }
