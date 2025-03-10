@@ -5,9 +5,10 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
+// Upgrade:                              1
 // Endpoints:                           27
 // Async Callback:                       1
-// Total number of exported functions:  29
+// Total number of exported functions:  30
 
 #![no_std]
 
@@ -18,6 +19,7 @@ multiversx_sc_wasm_adapter::endpoints! {
     opendex_sc_sft_nft_staking
     (
         init => init
+        upgrade => upgrade
         getStakingSftCollectionId => staking_sft_collection_id
         getRewardToken => reward_token
         getStakedNftCollectionId => staked_nft_collection_id

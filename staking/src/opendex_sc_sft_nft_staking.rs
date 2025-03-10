@@ -65,6 +65,9 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.reward_per_token_stored().set(BigUint::zero());
     }
 
+    #[upgrade]
+    fn upgrade(&self) {}
+
     // STORAGE
 
     #[view(getStakingSftCollectionId)]
