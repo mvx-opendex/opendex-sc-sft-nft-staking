@@ -20,4 +20,4 @@ fi
 
 rm -rf ${DOCKER_OUTPUT_FOLDER}
 
-mxpy contract reproducible-build --docker-image="multiversx/sdk-rust-contract-builder:v8.0.1"
+mxpy contract reproducible-build --docker-image="multiversx/sdk-rust-contract-builder:v9.0.0"

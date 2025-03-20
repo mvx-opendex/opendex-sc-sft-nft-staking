@@ -9,13 +9,13 @@ authors = ["you"]
 path = "src/opendex_sc_sft_nft_staking_controller.rs"
 
 [dependencies]
-multiversx-sc-modules = "0.56.1"
+multiversx-sc-modules = "0.57.0"
 
 [dependencies.multiversx-sc]
-version = "0.56.1"
+version = "0.57.0"
 
 [dev-dependencies]
 num-bigint = "0.4"
 
 [dev-dependencies.multiversx-sc-scenario]
-version = "0.56.1"
+version = "0.57.0"

@@ -1,5 +1,4 @@
 [settings]
-main = "main"
 
 [contracts.main]
 name = "opendex-sc-sft-nft-staking"
