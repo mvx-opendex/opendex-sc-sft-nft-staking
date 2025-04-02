@@ -90,9 +90,10 @@
             "05-reward_start_time": "u64:0",
             "06-reward_end_time": "u64:0",
             "07-reward_per_second": "biguint:0",
-            "08-fee_receiver": "address:fee",
-            "09-performance_fee": "u32:5",
-            "10-funder": "address:funder"
+            "08-reward_per_token": "biguint:0",
+            "09-fee_receiver": "address:fee",
+            "10-performance_fee": "u32:5",
+            "11-funder": "address:funder"
           }
         ]
       }

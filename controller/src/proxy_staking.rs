@@ -401,6 +401,7 @@ where
     pub reward_start_time: u64,
     pub reward_end_time: u64,
     pub reward_per_second: BigUint<Api>,
+    pub reward_per_token: BigUint<Api>,
     pub fee_receiver: ManagedAddress<Api>,
     pub performance_fee: u32,
     pub funder: ManagedAddress<Api>,
