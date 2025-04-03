@@ -282,9 +282,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         &self,
         staked_amount: BigUint,
         user_reward_per_token_paid: BigUint,
-        user_rewards: BigUint,
     ) -> MultiValue3<BigUint, BigUint, BigUint> {
-        self.get_pending_rewards(&staked_amount, &user_reward_per_token_paid, &user_rewards)
+        self.get_pending_rewards(&staked_amount, &user_reward_per_token_paid)
     }
 
     // Funder actions
@@ -425,11 +424,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         stake_info: &StakeInfo<Self::Api>,
     ) -> (EgldOrEsdtTokenPayment, EgldOrEsdtTokenPayment) {
         let (rewards, user_amount, fee_amount) = self
-            .get_pending_rewards(
-                &stake_info.amount,
-                &stake_info.user_reward_per_token_paid,
-                &stake_info.rewards,
-            )
+            .get_pending_rewards(&stake_info.amount, &stake_info.user_reward_per_token_paid)
             .into_tuple();
 
         let reward_token_id = self.reward_token().get();
@@ -466,12 +461,10 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         &self,
         staked_amount: &BigUint,
         user_reward_per_token_paid: &BigUint,
-        user_rewards: &BigUint,
     ) -> MultiValue3<BigUint, BigUint, BigUint> {
         let amount = staked_amount.clone()
             * (self.current_reward_per_token() - user_reward_per_token_paid)
-            / SAFETY_CONSTANT
-            + user_rewards;
+            / SAFETY_CONSTANT;
 
         let fee = &amount * self.performance_fee_percent().get() / 100u32;
 

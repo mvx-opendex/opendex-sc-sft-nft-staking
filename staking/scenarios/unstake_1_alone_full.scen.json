@@ -15,7 +15,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "0", "0"]
+        "arguments": ["2", "0"]
       },
       "expect": {
         "out": ["1000_000000", "900_000000", "100_000000"]

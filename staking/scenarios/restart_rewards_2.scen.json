@@ -15,7 +15,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "0", "0"]
+        "arguments": ["2", "0"]
       },
       "expect": {
         "out": ["750_000000", "675_000000", "75_000000"]
@@ -26,7 +26,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "250_000000_000000000000000000", "0"]
+        "arguments": ["2", "250_000000_000000000000000000"]
       },
       "expect": {
         "out": ["250_000000", "225_000000", "25_000000"]
@@ -43,7 +43,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "0", "0"]
+        "arguments": ["2", "0"]
       },
       "expect": {
         "out": ["750_000000", "675_000000", "75_000000"]
@@ -54,7 +54,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "250_000000_000000000000000000", "0"]
+        "arguments": ["2", "250_000000_000000000000000000"]
       },
       "expect": {
         "out": ["250_000000", "225_000000", "25_000000"]
@@ -100,7 +100,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "0", "0"]
+        "arguments": ["2", "0"]
       },
       "expect": {
         "out": ["750_000000", "675_000000", "75_000000"]
@@ -111,7 +111,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "250_000000_000000000000000000", "0"]
+        "arguments": ["2", "250_000000_000000000000000000"]
       },
       "expect": {
         "out": ["250_000000", "225_000000", "25_000000"]
@@ -128,7 +128,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "0", "0"]
+        "arguments": ["2", "0"]
       },
       "expect": {
         "out": ["950_000000", "855_000000", "95_000000"]
@@ -139,7 +139,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "250_000000_000000000000000000", "0"]
+        "arguments": ["2", "250_000000_000000000000000000"]
       },
       "expect": {
         "out": ["450_000000", "405_000000", "45_000000"]
@@ -156,7 +156,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "0", "0"]
+        "arguments": ["2", "0"]
       },
       "expect": {
         "out": ["950_000000", "855_000000", "95_000000"]
@@ -167,7 +167,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["2", "250_000000_000000000000000000", "0"]
+        "arguments": ["2", "250_000000_000000000000000000"]
       },
       "expect": {
         "out": ["450_000000", "405_000000", "45_000000"]

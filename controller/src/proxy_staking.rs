@@ -239,19 +239,16 @@ where
     pub fn get_pending_rewards_view<
         Arg0: ProxyArg<BigUint<Env::Api>>,
         Arg1: ProxyArg<BigUint<Env::Api>>,
-        Arg2: ProxyArg<BigUint<Env::Api>>,
     >(
         self,
         staked_amount: Arg0,
         user_reward_per_token_paid: Arg1,
-        user_rewards: Arg2,
     ) -> TxTypedCall<Env, From, To, NotPayable, Gas, MultiValue3<BigUint<Env::Api>, BigUint<Env::Api>, BigUint<Env::Api>>> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("getPendingRewards")
             .argument(&staked_amount)
             .argument(&user_reward_per_token_paid)
-            .argument(&user_rewards)
             .original_result()
     }
 
