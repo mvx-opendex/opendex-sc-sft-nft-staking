@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/ci
   pull_request:
 
 permissions:
@@ -20,8 +19,3 @@ jobs:
       coverage-args: --ignore-filename-regex='/.cargo/git' --output ./coverage.md
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: test_coverage
-        if: false
-      - name: rust_test
-        if: false
