@@ -93,6 +93,7 @@
       "accounts": {
         "sc:staking": {
           "balance": "0",
+          "code": "*",
           "storage": {
             "str:staked_nft_collection_id": "str:pending",
             "+": ""

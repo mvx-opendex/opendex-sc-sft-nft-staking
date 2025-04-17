@@ -55,6 +55,7 @@
           }
         },
         "address:user1": {
+          "nonce": "2",
           "balance": "0",
           "esdt": {
             "str:REWARD-000000": "900_000000",
@@ -86,8 +87,17 @@
                   "balance": "0"
                 }
               ]
+            },
+            "str:SPOS-000000": {
+              "lastNonce": "1",
+              "roles": [
+                "ESDTRoleNFTBurn",
+                "ESDTRoleNFTCreate",
+                "ESDTRoleNFTUpdateAttributes"
+              ]
             }
           },
+          "code": "*",
           "storage": {
             "+": ""
           }
