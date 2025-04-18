@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/*
   pull_request:
 
 permissions:
@@ -16,6 +17,5 @@ jobs:
     uses: multiversx/mx-sc-actions/.github/workflows/contracts.yml@v4.2.2
     with:
       rust-toolchain: stable
-      coverage-args: --ignore-filename-regex='/.cargo/git' --output ./coverage.md
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
