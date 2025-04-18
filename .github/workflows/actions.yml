@@ -17,7 +17,5 @@ jobs:
     uses: javier-nft/mx-sc-actions/.github/workflows/contracts.yml@main
     with:
       rust-toolchain: stable
-      enable-rust-tests: false
-      enable-test-coverage: false
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
