@@ -20,7 +20,7 @@
           "balance": "0"
         },
         "sc:staking": {
-          "code": "file:../output/opendex-sc-sft-nft-staking.wasm",
+          "code": "mxsc:../output/opendex-sc-sft-nft-staking.mxsc.json",
           "esdt": {
             "str:SPOS-000000": {
               "lastNonce": "0",
