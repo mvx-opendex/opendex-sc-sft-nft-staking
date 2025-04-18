@@ -41,7 +41,7 @@
           "nonce": "1"
         },
         "sc:controller": {
-          "code": "file:../output/opendex-sc-sft-nft-staking-controller.wasm",
+          "code": "mxsc:../output/opendex-sc-sft-nft-staking-controller.mxsc.json",
           "owner": "address:owner",
           "storage": {
             "str:contract|address:sc": "address:sc|address:other"
@@ -77,7 +77,7 @@
           "nonce": "1"
         },
         "sc:controller": {
-          "code": "file:../output/opendex-sc-sft-nft-staking-controller.wasm",
+          "code": "mxsc:../output/opendex-sc-sft-nft-staking-controller.mxsc.json",
           "owner": "address:owner",
           "storage": {
             "str:contract|address:sc": "address:sc|address:other",

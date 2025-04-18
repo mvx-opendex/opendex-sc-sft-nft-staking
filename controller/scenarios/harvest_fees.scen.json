@@ -13,7 +13,7 @@
         },
         "sc:controller": {
           "balance": "1,000000000000000000",
-          "code": "file:../output/opendex-sc-sft-nft-staking-controller.wasm",
+          "code": "mxsc:../output/opendex-sc-sft-nft-staking-controller.mxsc.json",
           "owner": "address:owner"
         }
       }
