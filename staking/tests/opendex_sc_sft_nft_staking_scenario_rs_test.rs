@@ -104,6 +104,11 @@ fn stake_2_rs() {
 }
 
 #[test]
+fn stake_delay_after_start_rs() {
+    world().run("scenarios/stake_delay_after_start.scen.json");
+}
+
+#[test]
 fn stake_errors_rs() {
     world().run("scenarios/stake_errors.scen.json");
 }
