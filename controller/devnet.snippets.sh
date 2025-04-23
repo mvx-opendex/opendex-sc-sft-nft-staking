@@ -42,9 +42,9 @@ upgrade() {
 
 verify() {
     mxpy contract verify "${SC_ADDRESS}" \
-        --packaged-src=./output-docker/opendex-sc-sft-nft-staking/opendex-sc-sft-nft-staking-0.0.0.source.json \
+        --packaged-src="${SCRIPT_DIR}/../output-docker/opendex-sc-sft-nft-staking-controller/opendex-sc-sft-nft-staking-controller-0.0.0.source.json" \
         --verifier-url="${PLAY_API_URL}" \
-        --docker-image="multiversx/sdk-rust-contract-builder:v8.0.1" \
+        --docker-image="multiversx/sdk-rust-contract-builder:v9.0.0" \
         --keyfile=${1}
 }
 
