@@ -24,6 +24,8 @@
         "contractCode": "mxsc:../output/opendex-sc-sft-nft-staking.mxsc.json",
         "arguments": [
           "str:SFT-000000",
+          "u64:4",
+          "u64:99999999",
           "str:REWARD-000000",
           "address:fee",
           "5",
@@ -84,16 +86,18 @@
         "out": [
           {
             "01-staking_sft_collection_id": "nested:str:SFT-000000",
-            "02-total_staked": "biguint:0",
-            "03-reward_token": "nested:str:REWARD-000000",
-            "04-staked_nft_collection_id": "u8:0",
-            "05-reward_start_time": "u64:0",
-            "06-reward_end_time": "u64:0",
-            "07-reward_per_second": "biguint:0",
-            "08-reward_per_token": "biguint:0",
-            "09-fee_receiver": "address:fee",
-            "10-performance_fee": "u32:5",
-            "11-funder": "address:funder"
+            "02-min_nonce_id": "u64:4",
+            "03-max_nonce_id": "u64:99999999",
+            "04-total_staked": "biguint:0",
+            "05-reward_token": "nested:str:REWARD-000000",
+            "06-staked_nft_collection_id": "u8:0",
+            "07-reward_start_time": "u64:0",
+            "08-reward_end_time": "u64:0",
+            "09-reward_per_second": "biguint:0",
+            "10-reward_per_token": "biguint:0",
+            "11-fee_receiver": "address:fee",
+            "12-performance_fee": "u32:5",
+            "13-funder": "address:funder"
           }
         ]
       }

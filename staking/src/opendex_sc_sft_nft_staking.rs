@@ -26,6 +26,8 @@ pub struct StakeInfo<M: ManagedTypeApi> {
 #[derive(ManagedVecItem, NestedEncode, NestedDecode, TopEncode, TopDecode)]
 pub struct Status<M: ManagedTypeApi> {
     staking_sft_collection_id: TokenIdentifier<M>,
+    min_nonce_id: u64,
+    max_nonce_id: u64,
     total_staked: BigUint<M>,
     reward_token: EgldOrEsdtTokenIdentifier<M>,
     staked_nft_collection_id: Option<TokenIdentifier<M>>,
@@ -46,6 +48,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     fn init(
         &self,
         staking_sft_collection_id: TokenIdentifier,
+        min_nonce_id: u64,
+        max_nonce_id: u64,
         reward_token: EgldOrEsdtTokenIdentifier,
         fee_receiver: ManagedAddress,
         performance_fee: u32,
@@ -56,6 +60,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         self.staking_sft_collection_id()
             .set(&staking_sft_collection_id);
+        self.min_nonce_id().set(min_nonce_id);
+        self.max_nonce_id().set(max_nonce_id);
         self.reward_token().set(&reward_token);
         self.fee_receiver().set(&fee_receiver);
         self.set_performance_fee_percent(performance_fee);
@@ -74,6 +80,14 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     #[view(getStakingSftCollectionId)]
     #[storage_mapper("staking_sft_collection_id")]
     fn staking_sft_collection_id(&self) -> SingleValueMapper<TokenIdentifier>;
+
+    #[view(getMinNonceId)]
+    #[storage_mapper("min_nonce_id")]
+    fn min_nonce_id(&self) -> SingleValueMapper<u64>;
+
+    #[view(getMaxNonceId)]
+    #[storage_mapper("max_nonce_id")]
+    fn max_nonce_id(&self) -> SingleValueMapper<u64>;
 
     #[view(getRewardToken)]
     #[storage_mapper("reward_token")]
@@ -142,6 +156,11 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         require!(
             payment.amount > BigUint::zero(),
             "Must stake at least 1 SFT"
+        );
+        require!(
+            payment.token_nonce >= self.min_nonce_id().get()
+                && payment.token_nonce <= self.max_nonce_id().get(),
+            "Invalid nonce"
         );
 
         let nft_amount = BigUint::from(1u32);
@@ -509,6 +528,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         Status {
             fee_receiver: self.fee_receiver().get(),
             funder: self.funder().get(),
+            min_nonce_id: self.min_nonce_id().get(),
+            max_nonce_id: self.max_nonce_id().get(),
             performance_fee: self.performance_fee_percent().get(),
             reward_token: self.reward_token().get(),
             staking_sft_collection_id: self.staking_sft_collection_id().get(),

@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           27
+// Endpoints:                           29
 // Async Callback:                       1
-// Total number of exported functions:  30
+// Total number of exported functions:  32
 
 #![no_std]
 
@@ -21,6 +21,8 @@ multiversx_sc_wasm_adapter::endpoints! {
         init => init
         upgrade => upgrade
         getStakingSftCollectionId => staking_sft_collection_id
+        getMinNonceId => min_nonce_id
+        getMaxNonceId => max_nonce_id
         getRewardToken => reward_token
         getStakedNftCollectionId => staked_nft_collection_id
         getRewardPerSecond => reward_per_second
