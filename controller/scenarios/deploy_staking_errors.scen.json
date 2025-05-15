@@ -28,7 +28,7 @@
         "from": "address:user",
         "to": "sc:controller",
         "function": "deployStaking",
-        "arguments": ["str:INVALID", "str:REWARD-000000"],
+        "arguments": ["str:INVALID", "0", "999999", "str:REWARD-000000"],
         "gasLimit": "5,000,000",
         "gasPrice": "0"
       },
@@ -45,7 +45,7 @@
         "from": "address:user",
         "to": "sc:controller",
         "function": "deployStaking",
-        "arguments": ["str:STAKING-000000", "str:INVALID"],
+        "arguments": ["str:STAKING-000000", "0", "999999", "str:INVALID"],
         "gasLimit": "5,000,000",
         "gasPrice": "0"
       },
@@ -62,7 +62,7 @@
         "from": "address:user",
         "to": "sc:controller",
         "function": "deployStaking",
-        "arguments": ["str:STAKING-000000", "str:REWARD-000000"],
+        "arguments": ["str:STAKING-000000", "0", "999999", "str:REWARD-000000"],
         "gasLimit": "5,000,000",
         "gasPrice": "0"
       },
@@ -98,7 +98,7 @@
         "from": "address:user",
         "to": "sc:controller",
         "function": "deployStaking",
-        "arguments": ["str:STAKING-000000", "str:REWARD-000000"],
+        "arguments": ["str:STAKING-000000", "0", "999999", "str:REWARD-000000"],
         "gasLimit": "5,000,000",
         "gasPrice": "0"
       },

@@ -24,6 +24,8 @@ pub trait FactoryModule:
     fn deploy_staking(
         &self,
         staking_sft_collection_id: TokenIdentifier,
+        min_nonce_id: u64,
+        max_nonce_id: u64,
         reward_token_id: EgldOrEsdtTokenIdentifier,
     ) -> ManagedAddress {
         let caller = self.blockchain().get_caller();
@@ -51,6 +53,8 @@ pub trait FactoryModule:
             .typed(crate::proxy_staking::OpendexSftNftStakingProxy)
             .init(
                 &staking_sft_collection_id,
+                min_nonce_id,
+                max_nonce_id,
                 &reward_token_id,
                 self.default_fee_receiver().get(),
                 self.default_performance_fee_percent().get(),

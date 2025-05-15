@@ -45,22 +45,28 @@ where
 {
     pub fn init<
         Arg0: ProxyArg<TokenIdentifier<Env::Api>>,
-        Arg1: ProxyArg<EgldOrEsdtTokenIdentifier<Env::Api>>,
-        Arg2: ProxyArg<ManagedAddress<Env::Api>>,
-        Arg3: ProxyArg<u32>,
+        Arg1: ProxyArg<u64>,
+        Arg2: ProxyArg<u64>,
+        Arg3: ProxyArg<EgldOrEsdtTokenIdentifier<Env::Api>>,
         Arg4: ProxyArg<ManagedAddress<Env::Api>>,
+        Arg5: ProxyArg<u32>,
+        Arg6: ProxyArg<ManagedAddress<Env::Api>>,
     >(
         self,
         staking_sft_collection_id: Arg0,
-        reward_token: Arg1,
-        fee_receiver: Arg2,
-        performance_fee: Arg3,
-        funder: Arg4,
+        min_nonce_id: Arg1,
+        max_nonce_id: Arg2,
+        reward_token: Arg3,
+        fee_receiver: Arg4,
+        performance_fee: Arg5,
+        funder: Arg6,
     ) -> TxTypedDeploy<Env, From, NotPayable, Gas, ()> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_deploy()
             .argument(&staking_sft_collection_id)
+            .argument(&min_nonce_id)
+            .argument(&max_nonce_id)
             .argument(&reward_token)
             .argument(&fee_receiver)
             .argument(&performance_fee)
@@ -103,6 +109,24 @@ where
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("getStakingSftCollectionId")
+            .original_result()
+    }
+
+    pub fn min_nonce_id(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, u64> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("getMinNonceId")
+            .original_result()
+    }
+
+    pub fn max_nonce_id(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, u64> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("getMaxNonceId")
             .original_result()
     }
 
@@ -392,6 +416,8 @@ where
     Api: ManagedTypeApi,
 {
     pub staking_sft_collection_id: TokenIdentifier<Api>,
+    pub min_nonce_id: u64,
+    pub max_nonce_id: u64,
     pub total_staked: BigUint<Api>,
     pub reward_token: EgldOrEsdtTokenIdentifier<Api>,
     pub staked_nft_collection_id: Option<TokenIdentifier<Api>>,

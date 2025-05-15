@@ -179,16 +179,18 @@
         "out": [
           {
             "01-staking_sft_collection_id": "nested:str:SFT-000000",
-            "02-total_staked": "biguint:4",
-            "03-reward_token": "nested:str:REWARD-000000",
-            "04-staked_nft_collection_id": "u8:01|nested:str:SPOS-000000",
-            "05-reward_start_time": "u64:100_000_000",
-            "06-reward_end_time": "u64:100_010_000",
-            "07-reward_per_second": "biguint:100000_0000000000",
-            "08-reward_per_token": "biguint:375_000_000_000000000000000000",
-            "09-fee_receiver": "address:fee",
-            "10-performance_fee": "u32:10",
-            "11-funder": "address:funder"
+            "02-min_nonce_id": "u64:0",
+            "03-max_nonce_id": "u64:99999999",
+            "04-total_staked": "biguint:4",
+            "05-reward_token": "nested:str:REWARD-000000",
+            "06-staked_nft_collection_id": "u8:01|nested:str:SPOS-000000",
+            "07-reward_start_time": "u64:100_000_000",
+            "08-reward_end_time": "u64:100_010_000",
+            "09-reward_per_second": "biguint:100000_0000000000",
+            "10-reward_per_token": "biguint:375_000_000_000000000000000000",
+            "11-fee_receiver": "address:fee",
+            "12-performance_fee": "u32:10",
+            "13-funder": "address:funder"
           }
         ]
       }
