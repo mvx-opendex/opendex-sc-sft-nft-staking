@@ -1,6 +1,6 @@
 {
-  "*": {
-    "address-devnet": "erd1qqqqqqqqqqqqqpgqftrwznd352ueu5qpqh9ult7ndhgcdxx36avsz0t4dc",
-    "address-mainnet": "erd1qqqqqqqqqqqqqpgqvx7fj3spvc4hj2n9vlwluw68643p6dar6avskfct66"
-  }
+    "*": {
+        "address-devnet": "erd1qqqqqqqqqqqqqpgqwtfy2vtk9stdhe0c354e2skwnz07z6e56avsd6uln5",
+        "address-mainnet": "erd1qqqqqqqqqqqqqpgqvx7fj3spvc4hj2n9vlwluw68643p6dar6avskfct66"
+    }
 }
