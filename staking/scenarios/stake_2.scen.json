@@ -179,7 +179,7 @@
         "out": [
           {
             "01-staking_sft_collection_id": "nested:str:SFT-000000",
-            "02-min_nonce_id": "u64:0",
+            "02-min_nonce_id": "u64:4",
             "03-max_nonce_id": "u64:99999999",
             "04-total_staked": "biguint:4",
             "05-reward_token": "nested:str:REWARD-000000",

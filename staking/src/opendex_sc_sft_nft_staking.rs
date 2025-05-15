@@ -157,6 +157,11 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             payment.amount > BigUint::zero(),
             "Must stake at least 1 SFT"
         );
+        require!(
+            payment.token_nonce >= self.min_nonce_id().get()
+                && payment.token_nonce <= self.max_nonce_id().get(),
+            "Invalid nonce"
+        );
 
         let nft_amount = BigUint::from(1u32);
         let stake_info = StakeInfo {

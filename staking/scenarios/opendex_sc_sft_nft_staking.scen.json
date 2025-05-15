@@ -24,7 +24,7 @@
         "contractCode": "mxsc:../output/opendex-sc-sft-nft-staking.mxsc.json",
         "arguments": [
           "str:SFT-000000",
-          "u64:0",
+          "u64:4",
           "u64:99999999",
           "str:REWARD-000000",
           "address:fee",
@@ -86,7 +86,7 @@
         "out": [
           {
             "01-staking_sft_collection_id": "nested:str:SFT-000000",
-            "02-min_nonce_id": "u64:0",
+            "02-min_nonce_id": "u64:4",
             "03-max_nonce_id": "u64:99999999",
             "04-total_staked": "biguint:0",
             "05-reward_token": "nested:str:REWARD-000000",

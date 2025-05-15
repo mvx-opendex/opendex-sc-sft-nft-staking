@@ -36,7 +36,7 @@
             "str:fee_receiver": "address:fee",
             "str:funder": "address:funder",
             "str:last_update_time": "u64:0",
-            "str:min_nonce_id": "u64:0",
+            "str:min_nonce_id": "u64:4",
             "str:max_nonce_id": "u64:99999999",
             "str:only_admin_module:admins.len": "u32:1",
             "str:only_admin_module:admins.item|u32:1": "address:admin",
@@ -164,7 +164,7 @@
         "out": [
           {
             "01-staking_sft_collection_id": "nested:str:SFT-000000",
-            "02-min_nonce_id": "u64:0",
+            "02-min_nonce_id": "u64:4",
             "03-max_nonce_id": "u64:99999999",
             "04-total_staked": "biguint:0",
             "05-reward_token": "nested:str:REWARD-000000",
