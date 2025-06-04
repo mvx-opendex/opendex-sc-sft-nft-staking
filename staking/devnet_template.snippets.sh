@@ -15,7 +15,7 @@ deploy() {
     echo 'You are about to deploy SC on devnet (Ctrl-C to abort)'
     read answer
 
-    mxpy contract deploy --bytecode=${BYTECODE} \
+    mxpy contract deploy --bytecode=${BYTECODE} --metadata-payable \
         --arguments "0x" "0x" "${DEAD_ADDRESS}" "0" "${DEAD_ADDRESS}" \
         --keyfile=${1} --gas-limit=100000000 --outfile="deploy.interaction.json" \
         --proxy=${PROXY} --chain=${CHAIN} --recall-nonce --send || return

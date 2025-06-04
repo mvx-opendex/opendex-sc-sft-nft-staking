@@ -6,15 +6,17 @@ SCRIPT_DIR=$(dirname $0)
 BYTECODE="${SCRIPT_DIR}/../output-docker/opendex-sc-sft-nft-staking/opendex-sc-sft-nft-staking.wasm"
 PROXY=https://gateway.multiversx.com
 PLAY_API_URL=https://play-api.multiversx.com
+MVX_TOOLS_URL=https://tools.multiversx.com
 SC_ADDRESS=$(mxpy data load --key=address-mainnet-template)
 CHAIN=1
 DEAD_ADDRESS=erd1deaddeaddeaddeaddeaddeaddeaddeaddeaddeaddeaddeaddeaqtv0gag
+
 
 deploy() {
     echo 'You are about to deploy SC on mainnet (Ctrl-C to abort)'
     read answer
 
-    mxpy contract deploy --bytecode=${BYTECODE} \
+    mxpy contract deploy --bytecode=${BYTECODE} --metadata-payable \
         --arguments "0x" "0x" "${DEAD_ADDRESS}" "0" "${DEAD_ADDRESS}" \
         --keyfile=${1} --gas-limit=100000000 --outfile="deploy.interaction.json" \
         --proxy=${PROXY} --chain=${CHAIN} --recall-nonce --send || return
@@ -33,7 +35,8 @@ upgrade() {
 
     mxpy contract upgrade --bytecode=${BYTECODE} --metadata-payable \
         --keyfile=${1} --gas-limit=100000000 --outfile="deploy.interaction.json" \
-        --proxy=${PROXY} --chain=${CHAIN} --recall-nonce --send ${SC_ADDRESS} || return
+        --proxy=${PROXY} --chain=${CHAIN} \
+        --recall-nonce --send ${SC_ADDRESS} || return
 
     echo ""
     echo "Smart contract upgraded: ${SC_ADDRESS}"

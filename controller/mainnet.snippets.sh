@@ -6,6 +6,7 @@ SCRIPT_DIR=$(dirname $0)
 BYTECODE="${SCRIPT_DIR}/../output-docker/opendex-sc-sft-nft-staking-controller/opendex-sc-sft-nft-staking-controller.wasm"
 PROXY=https://gateway.multiversx.com
 PLAY_API_URL=https://play-api.multiversx.com
+MVX_TOOLS_URL=https://tools.multiversx.com
 SC_ADDRESS=$(mxpy data load --key=address-mainnet)
 CHAIN=1
 TEMPLATE_ADDRESS=erd1qqqqqqqqqqqqqpgqxlnvr3m0n5mc8q7d8hyw9pn5z8tvzrpd6avsslv52s
@@ -34,7 +35,8 @@ upgrade() {
 
     mxpy contract upgrade --bytecode=${BYTECODE} --metadata-payable \
         --keyfile=${1} --gas-limit=50000000 --outfile="deploy.interaction.json" \
-        --proxy=${PROXY} --chain=${CHAIN} --recall-nonce --send ${SC_ADDRESS} || return
+        --proxy=${PROXY} --chain=${CHAIN} \
+        --recall-nonce --send ${SC_ADDRESS} || return
 
     echo ""
     echo "Smart contract upgraded: ${SC_ADDRESS}"
