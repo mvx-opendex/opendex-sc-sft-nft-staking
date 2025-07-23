@@ -2,7 +2,7 @@ name: On release build and attach artifacts
 
 on:
   release:
-    types: [prereleased, published]
+    types: [published]
 
 permissions:
   contents: write
