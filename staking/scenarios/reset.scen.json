@@ -1,0 +1,79 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "unstake_1_no_reward.scen.json"
+    },
+    {
+      "step": "setState",
+      "currentBlockInfo": {
+        "blockTimestamp": "100_010_000"
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:funder",
+        "to": "sc:staking",
+        "function": "reset",
+        "arguments": [],
+        "gasLimit": "10,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:funder": {
+          "balance": "0",
+          "esdt": {
+            "str:REWARD-000000": "2000_000000"
+          }
+        },
+        "sc:staking": {
+          "balance": "0",
+          "esdt": {
+            "str:REWARD-000000": ""
+          },
+          "code": "*",
+          "storage": {
+            "+": ""
+          }
+        }
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getStatus",
+        "arguments": []
+      },
+      "expect": {
+        "out": [
+          {
+            "01-staking_sft_collection_id": "nested:str:SFT-000000",
+            "02-min_nonce_id": "u64:4",
+            "03-max_nonce_id": "u64:99999999",
+            "04-total_staked": "biguint:0",
+            "05-reward_token": "nested:str:REWARD-000000",
+            "06-staked_nft_collection_id": "u8:1|nested:str:SPOS-000000",
+            "07-reward_start_time": "u64:0",
+            "08-reward_end_time": "u64:0",
+            "09-reward_per_second": "biguint:0",
+            "10-reward_per_token": "biguint:0",
+            "11-fee_receiver": "address:fee",
+            "12-performance_fee": "u32:10",
+            "13-funder": "address:funder"
+          }
+        ]
+      }
+    }
+  ]
+}

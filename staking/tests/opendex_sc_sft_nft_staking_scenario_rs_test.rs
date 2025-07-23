@@ -64,6 +64,16 @@ fn opendex_sc_sft_nft_staking_rs() {
 }
 
 #[test]
+fn reset_rs() {
+    world().run("scenarios/reset.scen.json");
+}
+
+#[test]
+fn reset_errors_rs() {
+    world().run("scenarios/reset_errors.scen.json");
+}
+
+#[test]
 fn restart_rewards_1_alone_rs() {
     world().run("scenarios/restart_rewards_1_alone.scen.json");
 }
