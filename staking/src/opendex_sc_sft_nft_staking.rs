@@ -65,11 +65,9 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.reward_token().set(&reward_token);
         self.fee_receiver().set(&fee_receiver);
         self.set_performance_fee_percent(performance_fee);
-        self.total_staked().set(&BigUint::zero());
-        self.reward_end_time().set(0);
         self.funder().set(&funder);
-        self.last_update_time().set(0);
-        self.reward_per_token_stored().set(BigUint::zero());
+
+        self.reset();
     }
 
     #[upgrade]
@@ -384,6 +382,34 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.last_update_time().set(current_time);
     }
 
+    #[endpoint(reset)]
+    fn reset_pool(&self) {
+        self.require_caller_is_funder();
+
+        require!(
+            self.total_staked().get() == BigUint::zero(),
+            "Total staked must be zero"
+        );
+
+        require!(
+            self.blockchain().get_block_timestamp() >= self.reward_end_time().get(),
+            "Rewards not ended"
+        );
+
+        self.reset();
+
+        let reward_token_id = self.reward_token().get();
+
+        let reward_amount = self.blockchain().get_sc_balance(&reward_token_id, 0);
+
+        self.send().direct_non_zero(
+            &self.blockchain().get_caller(),
+            &reward_token_id,
+            0,
+            &reward_amount,
+        );
+    }
+
     // Admin endpoints
 
     #[only_admin]
@@ -503,6 +529,14 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
                 && payment.amount == BigUint::from(1u32),
             "Invalid staking position NFT"
         );
+    }
+
+    fn reset(&self) {
+        self.reward_per_second().set(&BigUint::zero());
+        self.reward_per_token_stored().set(&BigUint::zero());
+        self.reward_start_time().set(0);
+        self.reward_end_time().set(0);
+        self.last_update_time().set(0);
     }
 
     #[view(getCurrentRewardPerToken)]
