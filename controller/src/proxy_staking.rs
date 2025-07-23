@@ -303,6 +303,15 @@ where
             .original_result()
     }
 
+    pub fn reset_pool(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("reset")
+            .original_result()
+    }
+
     pub fn set_performance_fee_percent_endpoint<
         Arg0: ProxyArg<u32>,
     >(
