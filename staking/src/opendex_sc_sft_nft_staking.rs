@@ -255,43 +255,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         let payment = self.call_value().single_esdt();
         let caller = self.blockchain().get_caller();
-        let position_nonce = payment.token_nonce;
 
-        let staked_nft_collection_id = self.staked_nft_collection_id().get_token_id();
-
-        // Verify the NFT is sent by the claimant
-        self.require_valid_staked_nft_payment(payment.clone());
-
-        // Get stake info from NFT attributes
-        let stake_info = self.decode_nft_attributes(position_nonce);
-
-        // Claim rewards
-        let (user_rewards_payment, fee_rewards_payment) =
-            self.claim_rewards_internal(position_nonce, &caller, &stake_info);
-
-        // Send the NFT back to the caller
-        self.send().direct_esdt(
-            &caller,
-            &staked_nft_collection_id,
-            position_nonce,
-            &BigUint::from(1u32),
-        );
-
-        // Send rewards
-        self.send().direct_non_zero(
-            &caller,
-            &user_rewards_payment.token_identifier,
-            user_rewards_payment.token_nonce,
-            &user_rewards_payment.amount,
-        );
-
-        // Send fees
-        self.send().direct_non_zero(
-            &self.fee_receiver().get(),
-            &fee_rewards_payment.token_identifier,
-            fee_rewards_payment.token_nonce,
-            &fee_rewards_payment.amount,
-        );
+        self.claim_rewards_for_payment(&payment, &caller);
     }
 
     #[view(getPendingRewards)]
@@ -460,6 +425,46 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         require!(stake_info.amount > 0, "Stake amount must be positive");
 
         stake_info
+    }
+
+    fn claim_rewards_for_payment(&self, payment: &EsdtTokenPayment, caller: &ManagedAddress) {
+        let position_nonce = payment.token_nonce;
+
+        let staked_nft_collection_id = self.staked_nft_collection_id().get_token_id();
+
+        // Verify the NFT is sent by the claimant
+        self.require_valid_staked_nft_payment(payment.clone());
+
+        // Get stake info from NFT attributes
+        let stake_info = self.decode_nft_attributes(position_nonce);
+
+        // Claim rewards
+        let (user_rewards_payment, fee_rewards_payment) =
+            self.claim_rewards_internal(position_nonce, &caller, &stake_info);
+
+        // Send the NFT back to the caller
+        self.send().direct_esdt(
+            &caller,
+            &staked_nft_collection_id,
+            position_nonce,
+            &BigUint::from(1u32),
+        );
+
+        // Send rewards
+        self.send().direct_non_zero(
+            &caller,
+            &user_rewards_payment.token_identifier,
+            user_rewards_payment.token_nonce,
+            &user_rewards_payment.amount,
+        );
+
+        // Send fees
+        self.send().direct_non_zero(
+            &self.fee_receiver().get(),
+            &fee_rewards_payment.token_identifier,
+            fee_rewards_payment.token_nonce,
+            &fee_rewards_payment.amount,
+        );
     }
 
     fn claim_rewards_internal(
