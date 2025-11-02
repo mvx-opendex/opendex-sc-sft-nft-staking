@@ -251,12 +251,25 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     #[endpoint(claimRewards)]
     #[payable]
     fn claim_rewards(&self) {
-        self.update_reward_per_token();
-
         let payment = self.call_value().single_esdt();
         let caller = self.blockchain().get_caller();
 
         self.claim_rewards_for_payment(&payment, &caller);
+    }
+
+    /// Claim rewards for multiple positions at once.
+    /// Payment(s): 1..N "staked NFT(s)".
+    #[endpoint(claimRewardsMulti)]
+    #[payable]
+    fn claim_rewards_multi(&self) {
+        let caller = &self.blockchain().get_caller();
+
+        self.call_value()
+            .all_transfers()
+            .iter()
+            .for_each(|payment| {
+                self.claim_rewards_for_payment(&payment.clone().unwrap_esdt(), &caller);
+            });
     }
 
     #[view(getPendingRewards)]
@@ -428,6 +441,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     }
 
     fn claim_rewards_for_payment(&self, payment: &EsdtTokenPayment, caller: &ManagedAddress) {
+        self.update_reward_per_token();
+
         let position_nonce = payment.token_nonce;
 
         let staked_nft_collection_id = self.staked_nft_collection_id().get_token_id();
