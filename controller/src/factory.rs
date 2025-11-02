@@ -30,7 +30,7 @@ pub trait FactoryModule:
     ) -> ManagedAddress {
         let caller = self.blockchain().get_caller();
 
-        if &caller != &self.blockchain().get_owner_address() {
+        if caller != self.blockchain().get_owner_address() {
             self.require_not_paused();
         }
 
@@ -125,16 +125,16 @@ pub trait FactoryModule:
     }
 
     fn check_user_rights_on_contract(&self, sc_address: &ManagedAddress) -> Contract<Self::Api> {
-        require!(!self.contract(&sc_address).is_empty(), "Contract not found");
+        require!(!self.contract(sc_address).is_empty(), "Contract not found");
 
-        let contract = self.contract(&sc_address).get();
+        let contract = self.contract(sc_address).get();
 
         let caller = self.blockchain().get_caller();
 
-        if &caller != &self.blockchain().get_owner_address() {
+        if caller != self.blockchain().get_owner_address() {
             self.require_not_paused();
 
-            require!(&contract.owner == &caller, "Not owner");
+            require!(contract.owner == caller, "Not owner");
         }
 
         contract
