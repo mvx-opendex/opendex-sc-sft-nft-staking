@@ -344,7 +344,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
                 let payment = self.call_value().egld().clone_value();
                 if payment > BigUint::zero() {
-                    self.send().direct_egld(&caller, &payment);
+                    self.send().direct_egld(caller, &payment);
                 }
             }
         }
@@ -488,7 +488,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
             self.staked_nft_collection_id()
                 .nft_update_attributes(position_nonce, &updated_stake_info);
 
-            self.claim_event(&caller, &user_amount, &fee_amount);
+            self.claim_event(caller, &user_amount, &fee_amount);
 
             (
                 EgldOrEsdtTokenPayment::new(reward_token_id.clone(), 0u64, user_amount),
@@ -526,14 +526,14 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     fn require_valid_staked_nft_payment(&self, payment: EsdtTokenPayment) {
         require!(
             payment.token_identifier == self.staked_nft_collection_id().get_token_id()
-                && payment.amount == BigUint::from(1u32),
+                && payment.amount == 1u32,
             "Invalid staking position NFT"
         );
     }
 
     fn reset(&self) {
-        self.reward_per_second().set(&BigUint::zero());
-        self.reward_per_token_stored().set(&BigUint::zero());
+        self.reward_per_second().set(BigUint::zero());
+        self.reward_per_token_stored().set(BigUint::zero());
         self.reward_start_time().set(0);
         self.reward_end_time().set(0);
         self.last_update_time().set(0);
