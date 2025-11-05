@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           30
+// Endpoints:                           31
 // Async Callback:                       1
-// Total number of exported functions:  33
+// Total number of exported functions:  34
 
 #![no_std]
 
@@ -37,6 +37,7 @@ multiversx_sc_wasm_adapter::endpoints! {
         stake => stake
         unstake => unstake
         claimRewards => claim_rewards
+        claimRewardsMulti => claim_rewards_multi
         getPendingRewards => get_pending_rewards_view
         issueStakedNftCollection => issue_staked_nft_collection
         fundRewardsAndSetDuration => fund_rewards_and_set_duration

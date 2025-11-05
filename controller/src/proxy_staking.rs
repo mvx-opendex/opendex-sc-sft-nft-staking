@@ -260,6 +260,16 @@ where
             .original_result()
     }
 
+    /// Claim rewards for multiple positions at once. 
+    /// Payment(s): 1..N "staked NFT(s)". 
+    pub fn claim_rewards_multi(
+        self,
+    ) -> TxTypedCall<Env, From, To, (), Gas, ()> {
+        self.wrapped_tx
+            .raw_call("claimRewardsMulti")
+            .original_result()
+    }
+
     pub fn get_pending_rewards_view<
         Arg0: ProxyArg<BigUint<Env::Api>>,
         Arg1: ProxyArg<BigUint<Env::Api>>,
