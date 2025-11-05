@@ -262,7 +262,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     #[endpoint(claimRewardsMulti)]
     #[payable]
     fn claim_rewards_multi(&self) {
-        let caller = &self.blockchain().get_caller();
+        let caller = self.blockchain().get_caller();
 
         self.call_value()
             .all_transfers()
