@@ -455,11 +455,11 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         // Claim rewards
         let (user_rewards_payment, fee_rewards_payment) =
-            self.claim_rewards_internal(position_nonce, &caller, &stake_info);
+            self.claim_rewards_internal(position_nonce, caller, &stake_info);
 
         // Send the NFT back to the caller
         self.send().direct_esdt(
-            &caller,
+            caller,
             &staked_nft_collection_id,
             position_nonce,
             &BigUint::from(1u32),
@@ -467,7 +467,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         // Send rewards
         self.send().direct_non_zero(
-            &caller,
+            caller,
             &user_rewards_payment.token_identifier,
             user_rewards_payment.token_nonce,
             &user_rewards_payment.amount,
