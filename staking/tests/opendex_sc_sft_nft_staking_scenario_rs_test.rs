@@ -39,6 +39,16 @@ fn claim_rewards_errors_rs() {
 }
 
 #[test]
+fn claim_rewards_multi_1_alone_full_rs() {
+    world().run("scenarios/claim_rewards_multi_1_alone_full.scen.json");
+}
+
+#[test]
+fn claim_rewards_multi_errors_rs() {
+    world().run("scenarios/claim_rewards_multi_errors.scen.json");
+}
+
+#[test]
 fn fund_and_start_rs() {
     world().run("scenarios/fund_and_start.scen.json");
 }
@@ -106,6 +116,11 @@ fn set_performance_fee_rs() {
 #[test]
 fn stake_1_rs() {
     world().run("scenarios/stake_1.scen.json");
+}
+
+#[test]
+fn stake_1_user_2_stakes_rs() {
+    world().run("scenarios/stake_1_user_2_stakes.scen.json");
 }
 
 #[test]

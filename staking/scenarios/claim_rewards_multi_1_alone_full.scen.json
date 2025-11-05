@@ -18,7 +18,7 @@
         "arguments": ["3", "0"]
       },
       "expect": {
-        "out": ["1000_000000", "900_000000", "100_000000"]
+        "out": ["999_999999", "900_000000", "99_999999"]
       }
     },
     {
@@ -56,11 +56,11 @@
         "address:fee": {
           "balance": "0",
           "esdt": {
-            "str:REWARD-000000": "100_000000"
+            "str:REWARD-000000": "99_999999"
           }
         },
         "address:user1": {
-          "nonce": "2",
+          "nonce": "3",
           "balance": "0",
           "esdt": {
             "str:REWARD-000000": "900_000000",
@@ -69,12 +69,12 @@
                 {
                   "nonce": "1",
                   "balance": "1",
-                  "attributes": "u64:24|biguint:2|u64:100_000_000|u64:100_010_000|biguint:500_000000_000000000000000000|biguint:1000_000000"
+                  "attributes": "u64:24|biguint:2|u64:100_000_000|u64:100_010_000|biguint:333_333333_333333333333333333|biguint:666_666666"
                 },
                 {
                   "nonce": "2",
                   "balance": "1",
-                  "attributes": "u64:25|biguint:1|u64:100_000_000|u64:100_010_000|biguint:500_000000_000000000000000000|biguint:1000_000000"
+                  "attributes": "u64:25|biguint:1|u64:100_000_000|u64:100_010_000|biguint:333_333333_333333333333333333|biguint:333_333333"
                 }
               ]
             }
@@ -83,7 +83,7 @@
         "sc:staking": {
           "balance": "0",
           "esdt": {
-            "str:REWARD-000000": "0",
+            "str:REWARD-000000": "1",
             "str:SFT-000000": {
               "instances": [
                 {
@@ -118,7 +118,7 @@
       "tx": {
         "to": "sc:staking",
         "function": "getPendingRewards",
-        "arguments": ["3", "500_000000_000000000000000000"]
+        "arguments": ["3", "333_333333_333333333333333333"]
       },
       "expect": {
         "out": ["0", "0", "0"]
