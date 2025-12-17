@@ -17,7 +17,7 @@ deploy() {
 
     mxpy contract deploy --bytecode=${BYTECODE} \
         --arguments "${TEMPLATE_ADDRESS}" \
-        --keyfile=${1} --gas-limit=100000000 --outfile="deploy.interaction.json" \
+        --keyfile=${1} --gas-limit=32000000 --outfile="deploy.interaction.json" \
         --proxy=${PROXY} --chain=${CHAIN} --send || return
 
     SC_ADDRESS=$(cat deploy.interaction.json | jq -r .contractAddress)
@@ -33,7 +33,7 @@ upgrade() {
     read answer
 
     mxpy contract upgrade --bytecode=${BYTECODE} --metadata-payable \
-        --keyfile=${1} --gas-limit=50000000 --outfile="deploy.interaction.json" \
+        --keyfile=${1} --gas-limit=32000000 --outfile="deploy.interaction.json" \
         --proxy=${PROXY} --chain=${CHAIN} --send ${SC_ADDRESS} || return
 
     echo ""
