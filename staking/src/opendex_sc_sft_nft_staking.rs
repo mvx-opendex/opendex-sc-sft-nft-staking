@@ -421,7 +421,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         // Claim rewards
         let (user_rewards_payment, fee_rewards_payment) =
-            self.claim_rewards_internal(position_nonce, &caller, &stake_info);
+            self.claim_rewards_internal(position_nonce, caller, &stake_info);
 
         // Clean up
         self.total_staked().update(|total| {
@@ -435,7 +435,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         // Return SFTs
         self.send().direct_esdt(
-            &caller,
+            caller,
             &self.staking_sft_collection_id().get(),
             stake_info.token_nonce,
             &stake_info.amount,
@@ -443,7 +443,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         // Send rewards
         self.send().direct_non_zero(
-            &caller,
+            caller,
             &user_rewards_payment.token_identifier,
             user_rewards_payment.token_nonce,
             &user_rewards_payment.amount,
@@ -458,7 +458,7 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         );
 
         // Emit event
-        self.unstake_event(&caller, &stake_info.amount, stake_info.token_nonce);
+        self.unstake_event(caller, &stake_info.amount, stake_info.token_nonce);
     }
 
     fn claim_rewards_for_payment(&self, payment: &EsdtTokenPayment, caller: &ManagedAddress) {

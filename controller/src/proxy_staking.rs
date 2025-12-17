@@ -250,6 +250,8 @@ where
             .original_result()
     }
 
+    /// Untake SFT/NFTs for multiple positions at once. 
+    /// Payment(s): 1..N "staked NFT(s)". 
     pub fn unstake_multi(
         self,
     ) -> TxTypedCall<Env, From, To, (), Gas, ()> {
