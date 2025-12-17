@@ -199,6 +199,8 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         self.unstake_for_payment(&payment, &caller);
     }
 
+    /// Untake SFT/NFTs for multiple positions at once.
+    /// Payment(s): 1..N "staked NFT(s)".
     #[endpoint(unstakeMulti)]
     #[payable("*")]
     fn unstake_multi(&self) {
