@@ -44,7 +44,7 @@ where
     Gas: TxGas<Env>,
 {
     pub fn init<
-        Arg0: ProxyArg<TokenIdentifier<Env::Api>>,
+        Arg0: ProxyArg<EsdtTokenIdentifier<Env::Api>>,
         Arg1: ProxyArg<u64>,
         Arg2: ProxyArg<u64>,
         Arg3: ProxyArg<EgldOrEsdtTokenIdentifier<Env::Api>>,
@@ -105,7 +105,7 @@ where
 {
     pub fn staking_sft_collection_id(
         self,
-    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, TokenIdentifier<Env::Api>> {
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, EsdtTokenIdentifier<Env::Api>> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("getStakingSftCollectionId")
@@ -141,7 +141,7 @@ where
 
     pub fn staked_nft_collection_id(
         self,
-    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, TokenIdentifier<Env::Api>> {
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, EsdtTokenIdentifier<Env::Api>> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("getStakedNftCollectionId")
@@ -444,12 +444,12 @@ pub struct Status<Api>
 where
     Api: ManagedTypeApi,
 {
-    pub staking_sft_collection_id: TokenIdentifier<Api>,
+    pub staking_sft_collection_id: EsdtTokenIdentifier<Api>,
     pub min_nonce_id: u64,
     pub max_nonce_id: u64,
     pub total_staked: BigUint<Api>,
     pub reward_token: EgldOrEsdtTokenIdentifier<Api>,
-    pub staked_nft_collection_id: Option<TokenIdentifier<Api>>,
+    pub staked_nft_collection_id: Option<EsdtTokenIdentifier<Api>>,
     pub reward_start_time: u64,
     pub reward_end_time: u64,
     pub reward_per_second: BigUint<Api>,

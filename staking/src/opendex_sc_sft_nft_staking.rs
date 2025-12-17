@@ -145,7 +145,10 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         let payment = self.call_value().single_esdt();
         let caller = self.blockchain().get_caller();
-        let current_time = self.blockchain().get_block_timestamp();
+        let current_time = self
+            .blockchain()
+            .get_block_timestamp_seconds()
+            .as_u64_seconds();
 
         require!(
             payment.token_identifier == self.staking_sft_collection_id().get(),
@@ -303,7 +306,10 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
         self.update_reward_per_token();
 
-        let current_time = self.blockchain().get_block_timestamp();
+        let current_time = self
+            .blockchain()
+            .get_block_timestamp_seconds()
+            .as_u64_seconds();
 
         require!(self.reward_end_time().get() < current_time, "Not ended");
 
@@ -338,7 +344,10 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         );
 
         require!(
-            self.blockchain().get_block_timestamp() >= self.reward_end_time().get(),
+            self.blockchain()
+                .get_block_timestamp_seconds()
+                .as_u64_seconds()
+                >= self.reward_end_time().get(),
             "Rewards not ended"
         );
 
@@ -623,9 +632,11 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
 
     #[inline]
     fn last_time_reward_applicable(&self) -> u64 {
-        self.reward_end_time()
-            .get()
-            .min(self.blockchain().get_block_timestamp())
+        self.reward_end_time().get().min(
+            self.blockchain()
+                .get_block_timestamp_seconds()
+                .as_u64_seconds(),
+        )
     }
 
     #[inline]
