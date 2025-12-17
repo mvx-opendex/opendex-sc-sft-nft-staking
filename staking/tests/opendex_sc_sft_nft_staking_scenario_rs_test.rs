@@ -157,3 +157,13 @@ fn unstake_1_no_reward_rs() {
 fn unstake_errors_rs() {
     world().run("scenarios/unstake_errors.scen.json");
 }
+
+#[test]
+fn unstake_multi_1_alone_full_rs() {
+    world().run("scenarios/unstake_multi_1_alone_full.scen.json");
+}
+
+#[test]
+fn unstake_multi_errors_rs() {
+    world().run("scenarios/unstake_multi_errors.scen.json");
+}

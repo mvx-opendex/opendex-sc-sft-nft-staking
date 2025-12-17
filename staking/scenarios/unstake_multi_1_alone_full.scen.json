@@ -1,0 +1,137 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "stake_1_user_2_stakes.scen.json"
+    },
+    {
+      "step": "setState",
+      "currentBlockInfo": {
+        "blockTimestamp": "100_010_000"
+      }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:staking",
+        "function": "getPendingRewards",
+        "arguments": ["3", "0"]
+      },
+      "expect": {
+        "out": ["999_999999", "900_000000", "99_999999"]
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:user1",
+        "to": "sc:staking",
+        "esdtValue": [
+          {
+            "tokenIdentifier": "str:SPOS-000000",
+            "nonce": "1",
+            "value": "1"
+          },
+          {
+            "tokenIdentifier": "str:SPOS-000000",
+            "nonce": "2",
+            "value": "1"
+          }
+        ],
+        "function": "unstakeMulti",
+        "arguments": [],
+        "gasLimit": "20,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:fee": {
+          "balance": "0",
+          "esdt": {
+            "str:REWARD-000000": "99_999999"
+          }
+        },
+        "address:user1": {
+          "nonce": "3",
+          "balance": "0",
+          "esdt": {
+            "str:REWARD-000000": "900_000000",
+            "str:SFT-000000": {
+              "instances": [
+                {
+                  "nonce": "24",
+                  "balance": "2"
+                },
+                {
+                  "nonce": "25",
+                  "balance": "1"
+                }
+              ]
+            },
+            "str:SPOS-000000": {
+              "instances": [
+                {
+                  "nonce": "1",
+                  "balance": "0"
+                },
+                {
+                  "nonce": "2",
+                  "balance": "0"
+                }
+              ]
+            }
+          }
+        },
+        "sc:staking": {
+          "balance": "0",
+          "esdt": {
+            "str:REWARD-000000": "1",
+            "str:SFT-000000": {
+              "instances": [
+                {
+                  "nonce": "24",
+                  "balance": "0"
+                },
+                {
+                  "nonce": "25",
+                  "balance": "0"
+                }
+              ]
+            },
+            "str:SPOS-000000": {
+              "lastNonce": "2",
+              "roles": [
+                "ESDTRoleNFTBurn",
+                "ESDTRoleNFTCreate",
+                "ESDTRoleNFTUpdateAttributes"
+              ],
+              "instances": [
+                {
+                  "nonce": "1",
+                  "balance": "0"
+                },
+                {
+                  "nonce": "2",
+                  "balance": "0"
+                }
+              ]
+            }
+          },
+          "code": "*",
+          "storage": {
+            "+": ""
+          }
+        },
+        "+": ""
+      }
+    }
+  ]
+}

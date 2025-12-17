@@ -192,58 +192,24 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
     #[endpoint]
     #[payable("*")]
     fn unstake(&self) {
-        self.update_reward_per_token();
-
         let payment = self.call_value().single_esdt();
+
         let caller = self.blockchain().get_caller();
-        let position_nonce = payment.token_nonce;
 
-        // Verify the NFT
-        self.require_valid_staked_nft_payment(payment.clone());
+        self.unstake_for_payment(&payment, &caller);
+    }
 
-        // Get stake info from NFT attributes
-        let stake_info = self.decode_nft_attributes(position_nonce);
+    #[endpoint(unstakeMulti)]
+    #[payable("*")]
+    fn unstake_multi(&self) {
+        let caller = self.blockchain().get_caller();
 
-        // Claim rewards
-        let (user_rewards_payment, fee_rewards_payment) =
-            self.claim_rewards_internal(position_nonce, &caller, &stake_info);
-
-        // Clean up
-        self.total_staked().update(|total| {
-            require!(*total >= stake_info.amount, "Total staked underflow");
-            *total -= &stake_info.amount;
-        });
-
-        // Burn the NFT
-        self.staked_nft_collection_id()
-            .nft_burn(position_nonce, &BigUint::from(1u32));
-
-        // Return SFTs
-        self.send().direct_esdt(
-            &caller,
-            &self.staking_sft_collection_id().get(),
-            stake_info.token_nonce,
-            &stake_info.amount,
-        );
-
-        // Send rewards
-        self.send().direct_non_zero(
-            &caller,
-            &user_rewards_payment.token_identifier,
-            user_rewards_payment.token_nonce,
-            &user_rewards_payment.amount,
-        );
-
-        // Send fees
-        self.send().direct_non_zero(
-            &self.fee_receiver().get(),
-            &fee_rewards_payment.token_identifier,
-            fee_rewards_payment.token_nonce,
-            &fee_rewards_payment.amount,
-        );
-
-        // Emit event
-        self.unstake_event(&caller, &stake_info.amount, stake_info.token_nonce);
+        self.call_value()
+            .all_transfers()
+            .iter()
+            .for_each(|payment| {
+                self.unstake_for_payment(&payment.clone().unwrap_esdt(), &caller);
+            });
     }
 
     /// Claim rewards.
@@ -438,6 +404,59 @@ pub trait OpendexSftNftStaking: multiversx_sc_modules::only_admin::OnlyAdminModu
         require!(stake_info.amount > 0, "Stake amount must be positive");
 
         stake_info
+    }
+
+    fn unstake_for_payment(&self, payment: &EsdtTokenPayment, caller: &ManagedAddress) {
+        self.update_reward_per_token();
+
+        let position_nonce = payment.token_nonce;
+
+        // Verify the NFT
+        self.require_valid_staked_nft_payment(payment.clone());
+
+        // Get stake info from NFT attributes
+        let stake_info = self.decode_nft_attributes(position_nonce);
+
+        // Claim rewards
+        let (user_rewards_payment, fee_rewards_payment) =
+            self.claim_rewards_internal(position_nonce, &caller, &stake_info);
+
+        // Clean up
+        self.total_staked().update(|total| {
+            require!(*total >= stake_info.amount, "Total staked underflow");
+            *total -= &stake_info.amount;
+        });
+
+        // Burn the NFT
+        self.staked_nft_collection_id()
+            .nft_burn(position_nonce, &BigUint::from(1u32));
+
+        // Return SFTs
+        self.send().direct_esdt(
+            &caller,
+            &self.staking_sft_collection_id().get(),
+            stake_info.token_nonce,
+            &stake_info.amount,
+        );
+
+        // Send rewards
+        self.send().direct_non_zero(
+            &caller,
+            &user_rewards_payment.token_identifier,
+            user_rewards_payment.token_nonce,
+            &user_rewards_payment.amount,
+        );
+
+        // Send fees
+        self.send().direct_non_zero(
+            &self.fee_receiver().get(),
+            &fee_rewards_payment.token_identifier,
+            fee_rewards_payment.token_nonce,
+            &fee_rewards_payment.amount,
+        );
+
+        // Emit event
+        self.unstake_event(&caller, &stake_info.amount, stake_info.token_nonce);
     }
 
     fn claim_rewards_for_payment(&self, payment: &EsdtTokenPayment, caller: &ManagedAddress) {
