@@ -59,7 +59,7 @@
         "to": "sc:staking",
         "egldValue": "5",
         "function": "issueStakedNftCollection",
-        "arguments": ["str:CollName", "str:SPOS-000000"],
+        "arguments": ["str:CollName", "str:SPOS"],
         "gasLimit": "75,000,000",
         "gasPrice": "0"
       },
@@ -77,7 +77,7 @@
         "to": "sc:staking",
         "egldValue": "50_000_000_000_000_000",
         "function": "issueStakedNftCollection",
-        "arguments": ["str:CollName", "str:SPOS-000000"],
+        "arguments": ["str:CollName", "str:SPOS"],
         "gasLimit": "75,000,000",
         "gasPrice": "0"
       },
@@ -95,7 +95,7 @@
           "balance": "0",
           "code": "*",
           "storage": {
-            "str:staked_nft_collection_id": "str:pending",
+            "str:staked_nft_collection_id": "str:SPOS-95a839",
             "+": ""
           }
         },

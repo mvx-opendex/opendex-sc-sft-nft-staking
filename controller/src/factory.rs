@@ -106,7 +106,11 @@ pub trait FactoryModule:
             .sync_call();
 
         require!(
-            status.reward_end_time < self.blockchain().get_block_timestamp(),
+            status.reward_end_time
+                < self
+                    .blockchain()
+                    .get_block_timestamp_seconds()
+                    .as_u64_seconds(),
             "Staking is not ended"
         );
 
